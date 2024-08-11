@@ -3,14 +3,15 @@ import { getAllCommonDataSchema } from '../_lib/schemas/common'
 
 export const dataSchema = z.object({
   id: z.number(),
-  sentence: z.string().transform((e) => e?.toLowerCase()),
-  translate: z.string().optional(),
+  idiom: z.string().transform((e) => e?.toLowerCase()),
+  definition: z.string().optional(),
+  description: z.string().optional(),
 })
 
 export const getAllDataSchema = getAllCommonDataSchema.merge(
   dataSchema
     .pick({
-      sentence: true,
+      idiom: true,
     })
     .partial()
 )

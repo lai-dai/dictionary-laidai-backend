@@ -2,11 +2,12 @@ import * as factory from '../_middlewares/service-factory'
 import { RequestHandler } from 'express'
 import { models } from '../_db'
 import { IncludeOptions } from 'sequelize'
+import { AttrType } from './type'
 
 export const aliasGetAllData: RequestHandler = (req, res, next) => {
-  const { page, pageSize } = req.query
+  const { page, pageSize } = req.query as any
 
-  const options: Record<string, any> = {
+  const options: factory.GetAllOptionsType<AttrType> = {
     page,
     pageSize,
     include: [

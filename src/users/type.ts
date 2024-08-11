@@ -1,13 +1,4 @@
-export interface DataAttr {
-  id?: number
-  name: string
-  email: string
-  image?: string
-  role?: string
-  password?: string
-  passwordChangedAt?: number
-  passwordResetToken?: string
-  passwordResetExpires?: number
-  active?: boolean
-  provider?: 'github' | 'google' | 'credentials'
-}
+import { z } from 'zod'
+import { dataSchema } from './schema'
+
+export type AttrType = z.infer<typeof dataSchema>

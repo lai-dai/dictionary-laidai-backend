@@ -2,19 +2,19 @@ import { DataTypes, Model, Sequelize } from 'sequelize'
 import { MODELS_NAME } from '../_lib/constants/models-name'
 import { AttrType } from './type'
 
-export const WordsModel = (sequelize: Sequelize) =>
-  sequelize.define<Model<AttrType>, AttrType>(MODELS_NAME.WORDS, {
+export const IdiomsModel = (sequelize: Sequelize) =>
+  sequelize.define<Model<AttrType>, AttrType>(MODELS_NAME.IDIOMS, {
     id: {
       type: DataTypes.INTEGER.UNSIGNED,
       autoIncrement: true,
       primaryKey: true,
     },
-    word: {
+    idiom: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
     },
-    phonetic: {
+    definition: {
       type: DataTypes.STRING,
     },
     description: {

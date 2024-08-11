@@ -15,3 +15,5 @@ export const getAllCommonDataSchema = z.object({
 })
 
 export const orderSchema = z.enum(['DESC', 'ASC'])
+
+export const roleSchema = z.enum(['user', 'admin'])

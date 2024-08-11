@@ -2,13 +2,13 @@ import express from 'express'
 
 import * as controller from './controller'
 import { validatorBody, validatorQuery } from '../_middlewares/validator'
-import { createDataSchema, getAllDataSchema } from './schema'
+import { createDataSchema, getAllDataSchema, updateDataSchema } from './schema'
 import * as authController from '../auth/controller'
 
 export const router = express.Router()
 
 router.use(authController.protect)
-router.use(authController.restrictTo('admin'))
+router.use(authController.restrictTo('user'))
 
 router
   .route('/')
@@ -22,5 +22,5 @@ router
 router
   .route('/:id')
   .get(controller.getData)
-  .patch(validatorBody(createDataSchema), controller.updateData)
+  .patch(validatorBody(updateDataSchema), controller.updateData)
   .delete(controller.deleteData)

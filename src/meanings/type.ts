@@ -1,6 +1,4 @@
-export interface AttrType {
-  id: number
-  // partOfSpeechId: number
-  // pastParticipleIds?: number[]
-  // definitionsIds?: number[]
-}
+import { z } from 'zod'
+import { dataSchema } from './schema'
+
+export type AttrType = z.infer<typeof dataSchema>

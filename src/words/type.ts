@@ -1,14 +1,4 @@
-export interface AttrType {
-  id: number
-  word: string
-  phonetic?: string
-  description?: string
-  // idioms: {
-  //   idiom: string
-  //   definition: string
-  //   examples?: {
-  //     sentence: string
-  //     translate?: string
-  //   }[]
-  // }[]
-}
+import { z } from 'zod'
+import { dataSchema } from './schema'
+
+export type AttrType = z.infer<typeof dataSchema>

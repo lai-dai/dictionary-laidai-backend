@@ -3,18 +3,23 @@ import { getAllCommonDataSchema } from '../_lib/schemas/common'
 
 export const dataSchema = z.object({
   id: z.number(),
-  sentence: z.string().transform((e) => e?.toLowerCase()),
-  translate: z.string().optional(),
+  content: z.string(),
+  totalLike: z.number().optional(),
+  commentId: z.number().nullable().optional(),
 })
 
 export const getAllDataSchema = getAllCommonDataSchema.merge(
   dataSchema
     .pick({
-      sentence: true,
+      content: true,
     })
     .partial()
 )
 
-export const createDataSchema = dataSchema.omit({ id: true })
+export const createDataSchema = dataSchema.omit({ id: true }).merge(
+  z.object({
+    commentId: z.number().optional(),
+  })
+)
 
 export const updateDataSchema = createDataSchema.partial()

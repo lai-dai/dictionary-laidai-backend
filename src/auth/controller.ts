@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes'
 import crypto from 'crypto'
 
 import { models } from '../_db'
-import { DataAttr } from '../users/type'
+import { AttrType } from '../users/type'
 import { signToken } from '../_lib/utils/token'
 import { catchAsync } from '../_lib/utils/catch-async'
 import { encryptPassword, matchPassword } from '../_lib/utils/password'
@@ -13,9 +13,11 @@ import jwt from 'jsonwebtoken'
 import { delve } from '../_lib/utils/delve'
 import { sendEmail } from '../_lib/utils/email'
 import { Op } from 'sequelize'
+import { OAuth2Client } from 'google-auth-library'
+import { RoleType } from '../_lib/types/common'
 
 const createSendToken = (
-  user: DataAttr,
+  user: AttrType,
   statusCode: number,
   req: Request,
   res: Response,
@@ -69,7 +71,7 @@ export const register = catchAsync(async (req, res, next) => {
     name,
     email,
     password,
-  })
+  } as any)
 
   createSendToken(
     newUser.dataValues,
@@ -92,6 +94,7 @@ export const login = catchAsync(async (req, res, next) => {
       )
     )
   }
+
   // 2) Check if user exists && password is correct
   const user = await models.User.findOne({
     where: { email },
@@ -208,7 +211,7 @@ export const isLoggedIn: RequestHandler = async (req, res, next) => {
   next()
 }
 
-export const restrictTo = (...roles: string[]) => {
+export const restrictTo = (...roles: RoleType[]) => {
   return ((req, res, next) => {
     // roles ['admin', 'lead-guide']. role='user'
     if (!roles.includes(req.user?.role!)) {
@@ -234,7 +237,7 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
     .createHash('sha256')
     .update(resetToken)
     .digest('hex')
-  console.log('🚀 resetToken', resetToken)
+
   user.setDataValue('passwordResetToken', passwordResetToken)
   user.setDataValue('passwordResetExpires', Date.now() + 10 * 60 * 1000)
 
@@ -285,7 +288,7 @@ export const resetPassword = catchAsync(async (req, res, next) => {
       passwordResetExpires: { [Op.gt]: new Date() },
     },
   })
-  console.log('🚀 user', user?.dataValues)
+
   // 2) If token has not expired, and there is user, set the new password
   if (!user) {
     return next(
@@ -346,8 +349,6 @@ export const updatePassword = catchAsync(async (req, res, next) => {
     'Update password is successfully'
   )
 })
-
-import { OAuth2Client } from 'google-auth-library'
 
 const client = new OAuth2Client()
 

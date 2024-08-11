@@ -1,10 +1,10 @@
 import { DataTypes, Model, Sequelize } from 'sequelize'
 
 import { MODELS_NAME } from '../_lib/constants/models-name'
-import { DataAttr } from './type'
+import { AttrType } from './type'
 
 export const UserModel = (sequelize: Sequelize) =>
-  sequelize.define<Model<DataAttr>, DataAttr>(
+  sequelize.define<Model<AttrType>, AttrType>(
     MODELS_NAME.USERS,
     {
       id: {
@@ -23,7 +23,7 @@ export const UserModel = (sequelize: Sequelize) =>
       },
       image: {
         type: DataTypes.STRING,
-        defaultValue: 'default.jpg',
+        defaultValue: 'default',
       },
       role: {
         type: DataTypes.ENUM('user', 'admin'),
