@@ -9,7 +9,6 @@ import { UserModel } from '../users/model'
 import { FavoritesModel } from '../favorites/model'
 import { IdiomsModel } from '../idioms/model'
 import { CommentsModel } from '../comments/model'
-import { SubCommentsModel } from '../sub-comments/model'
 
 export const sequelize = new Sequelize(options)
 
@@ -23,7 +22,6 @@ export const models = {
   Favorite: FavoritesModel(sequelize),
   Idiom: IdiomsModel(sequelize),
   Comment: CommentsModel(sequelize),
-  SubComment: SubCommentsModel(sequelize),
 }
 
 models.PartOfSpeech.belongsTo(models.User, { as: 'createdBy' })
@@ -33,14 +31,12 @@ models.Meaning.belongsTo(models.User, { as: 'createdBy' })
 models.Word.belongsTo(models.User, { as: 'createdBy' })
 models.Idiom.belongsTo(models.User, { as: 'createdBy' })
 models.Comment.belongsTo(models.User, { as: 'createdBy' })
-models.SubComment.belongsTo(models.User, { as: 'createdBy' })
 
 models.Example.belongsTo(models.Word, { as: 'word' })
 models.Definition.belongsTo(models.Word, { as: 'word' })
 models.Meaning.belongsTo(models.Word, { as: 'word' })
 models.Idiom.belongsTo(models.Word, { as: 'word' })
 models.Comment.belongsTo(models.Word, { as: 'word' })
-models.SubComment.belongsTo(models.Word, { as: 'word' })
 
 models.Comment.hasMany(models.Comment, { as: 'children' })
 

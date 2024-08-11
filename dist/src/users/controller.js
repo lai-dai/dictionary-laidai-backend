@@ -35,7 +35,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteData = exports.updateData = exports.getAllData = exports.getData = exports.createData = exports.deleteMe = exports.updateMe = exports.getMe = exports.resizeUserImage = exports.uploadUserImage = void 0;
+exports.deleteData = exports.updateData = exports.getData = exports.createData = exports.getAllData = exports.aliasGetAllData = exports.deleteMe = exports.updateMe = exports.getMe = exports.resizeUserImage = exports.uploadUserImage = void 0;
+const sequelize_1 = require("sequelize");
 const multer_1 = __importDefault(require("multer"));
 const sharp_1 = __importDefault(require("sharp"));
 const factory = __importStar(require("../_middlewares/service-factory"));
@@ -135,6 +136,36 @@ exports.deleteMe = (0, catch_async_1.catchAsync)((req, res, next) => __awaiter(v
         data: null,
     });
 }));
+const aliasGetAllData = (req, res, next) => {
+    const { page, pageSize, name, email, role, active, provider } = req.query;
+    const options = {
+        page,
+        pageSize,
+    };
+    switch (true) {
+        case typeof name === 'string' && name !== '':
+            options.where = {
+                name: { [sequelize_1.Op.like]: `%${name}%` },
+            };
+            break;
+        case typeof email === 'string' && email !== '':
+            options.where = Object.assign({ email: { [sequelize_1.Op.like]: `%${email}%` } }, options.where);
+            break;
+        case typeof role === 'string' && role !== '':
+            options.where = Object.assign({ role: { [sequelize_1.Op.eq]: role } }, options.where);
+            break;
+        case typeof active === 'boolean':
+            options.where = Object.assign({ active: { [sequelize_1.Op.eq]: active } }, options.where);
+            break;
+        case typeof provider === 'string' && provider !== '':
+            options.where = Object.assign({ provider: { [sequelize_1.Op.eq]: provider } }, options.where);
+            break;
+    }
+    req.options = options;
+    next();
+};
+exports.aliasGetAllData = aliasGetAllData;
+exports.getAllData = factory.getAll(_db_1.models.User);
 const createData = (req, res) => {
     res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
         status: 'error',
@@ -143,7 +174,6 @@ const createData = (req, res) => {
 };
 exports.createData = createData;
 exports.getData = factory.getOne(_db_1.models.User);
-exports.getAllData = factory.getAll(_db_1.models.User);
 // Do NOT update passwords with this!
 exports.updateData = factory.updateOne(_db_1.models.User);
 exports.deleteData = factory.deleteOne(_db_1.models.User);

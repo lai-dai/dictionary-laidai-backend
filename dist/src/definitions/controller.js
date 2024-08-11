@@ -28,7 +28,7 @@ const sequelize_1 = require("sequelize");
 const factory = __importStar(require("../_middlewares/service-factory"));
 const _db_1 = require("../_db");
 const aliasGetAllData = (req, res, next) => {
-    const { page, pageSize, definition, examplesIds } = req.query;
+    const { page, pageSize, definition } = req.query;
     const options = {
         page,
         pageSize,
@@ -36,14 +36,16 @@ const aliasGetAllData = (req, res, next) => {
             {
                 model: _db_1.models.Example,
                 as: 'examples',
-                attributes: ['sentence', 'translate'],
+                attributes: ['id', 'sentence', 'translate'],
             },
         ],
     };
-    if (definition) {
-        options.where = {
-            definition: { [sequelize_1.Op.like]: `%${definition}%` },
-        };
+    switch (true) {
+        case typeof definition === 'string' && definition !== '':
+            options.where = {
+                definition: { [sequelize_1.Op.like]: `%${definition}%` },
+            };
+            break;
     }
     // include: [{model: Tag, as: 'tags'}],
     //   where: {'tags.id': {in: [1,2,3,4]}},

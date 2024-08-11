@@ -20,14 +20,17 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteOne = exports.updateOne = exports.getOne = exports.createOne = exports.getAll = void 0;
+exports.deleteOne = exports.updateOne = exports.getOneBySlug = exports.getOne = exports.createOne = exports.getAll = void 0;
+exports.updateInclude = updateInclude;
+exports.updatedAttributes = updatedAttributes;
 const catch_async_1 = require("../_lib/utils/catch-async");
 const http_status_codes_1 = require("http-status-codes");
 const app_error_1 = require("../_lib/utils/app-error");
 const status_name_1 = require("../_lib/constants/status-name");
+const _db_1 = require("../_db");
 const getAll = (Model) => (0, catch_async_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const _a = req.options || {}, { page, pageSize } = _a, opts = __rest(_a, ["page", "pageSize"]);
-    const { count, rows } = yield Model.findAndCountAll(Object.assign({ limit: pageSize, offset: (page - 1) * pageSize }, opts));
+    const _a = req.options || {}, { pageSize, page, include = [], attributes } = _a, opts = __rest(_a, ["pageSize", "page", "include", "attributes"]);
+    const { count, rows } = yield Model.findAndCountAll(Object.assign({ limit: pageSize, offset: (page - 1) * pageSize, include: updateInclude(include), attributes: updatedAttributes(attributes) }, opts));
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: status_name_1.STATUS_NAME.SUCCESS,
         message: 'Get all data successfully',
@@ -44,6 +47,8 @@ const getAll = (Model) => (0, catch_async_1.catchAsync)((req, res, next) => __aw
 }));
 exports.getAll = getAll;
 const createOne = (Model) => (0, catch_async_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    req.body.createdById = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
     const doc = yield Model.create(Object.assign({}, req.body));
     return res.status(http_status_codes_1.StatusCodes.CREATED).json({
         status: status_name_1.STATUS_NAME.SUCCESS,
@@ -54,7 +59,8 @@ const createOne = (Model) => (0, catch_async_1.catchAsync)((req, res, next) => _
 exports.createOne = createOne;
 const getOne = (Model) => (0, catch_async_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const doc = yield Model.findByPk(id, req.options);
+    const _a = req.options || {}, { include = [], attributes } = _a, opts = __rest(_a, ["include", "attributes"]);
+    const doc = yield Model.findByPk(id, Object.assign({ include: updateInclude(include), attributes: updatedAttributes(attributes) }, opts));
     if (!doc) {
         return next(new app_error_1.AppError('No document found with that ID', http_status_codes_1.StatusCodes.NOT_FOUND));
     }
@@ -65,8 +71,24 @@ const getOne = (Model) => (0, catch_async_1.catchAsync)((req, res, next) => __aw
     });
 }));
 exports.getOne = getOne;
+const getOneBySlug = (Model) => (0, catch_async_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { slug } = req.params;
+    const _a = req.options || {}, { where, include = [], attributes } = _a, opts = __rest(_a, ["where", "include", "attributes"]);
+    const doc = yield Model.findOne(Object.assign({ where: Object.assign({ slug: slug }, where), include: updateInclude(include), attributes: updatedAttributes(attributes) }, opts));
+    if (!doc) {
+        return next(new app_error_1.AppError('No document found with that slug', http_status_codes_1.StatusCodes.NOT_FOUND));
+    }
+    res.status(http_status_codes_1.StatusCodes.OK).json({
+        status: status_name_1.STATUS_NAME.SUCCESS,
+        message: 'Get data successfully',
+        data: doc,
+    });
+}));
+exports.getOneBySlug = getOneBySlug;
 const updateOne = (Model) => (0, catch_async_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const { id } = req.params;
+    req.body.createdById = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
     yield Model.update(Object.assign({}, req.body), { where: { id: id } });
     const doc = yield Model.findByPk(id);
     if (!doc) {
@@ -82,10 +104,10 @@ exports.updateOne = updateOne;
 const deleteOne = (Model) => (0, catch_async_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const doc = yield Model.findByPk(id);
-    yield Model.destroy({ where: { id: id } });
     if (!doc) {
         return next(new app_error_1.AppError('No document found with that ID', http_status_codes_1.StatusCodes.NOT_FOUND));
     }
+    yield Model.destroy({ where: { id: id } });
     res.status(http_status_codes_1.StatusCodes.OK).json({
         status: status_name_1.STATUS_NAME.SUCCESS,
         message: 'Delete data successfully',
@@ -93,3 +115,49 @@ const deleteOne = (Model) => (0, catch_async_1.catchAsync)((req, res, next) => _
     });
 }));
 exports.deleteOne = deleteOne;
+function updateInclude(include) {
+    let result = [
+        {
+            model: _db_1.models.User,
+            as: 'createdBy',
+            attributes: ['id', 'name', 'email', 'image', 'role'],
+        },
+    ];
+    switch (true) {
+        case Array.isArray(include):
+            result = result.concat(include);
+            break;
+        case typeof include === 'object':
+            result = [...result, include];
+            break;
+    }
+    return result;
+}
+function updatedAttributes(attributes, initExclude) {
+    const result = {
+        exclude: ['createdById'],
+    };
+    switch (true) {
+        case Array.isArray(initExclude):
+            result.exclude = result.exclude.concat(initExclude);
+            break;
+        case Array.isArray(attributes):
+            result.include = attributes;
+            break;
+        case typeof attributes === 'object':
+            switch (true) {
+                case !!attributes.exclude:
+                    result.exclude = result.exclude.concat(attributes.exclude);
+                    break;
+                case !!attributes.include:
+                    result.include = attributes.include;
+                    break;
+                case !!attributes.exclude && !!attributes.include:
+                    result.exclude = result.exclude.concat(attributes.exclude);
+                    result.include = attributes.include;
+                    break;
+            }
+            break;
+    }
+    return result;
+}

@@ -34,15 +34,13 @@ const schema_1 = require("./schema");
 const authController = __importStar(require("../auth/controller"));
 exports.router = express_1.default.Router();
 exports.router.use(authController.protect);
-exports.router
-    .route('/')
-    .get((0, validator_1.validatorQuery)(schema_1.getAllPartOfSpeechSchema), controller.aliasGetAllData, controller.getAllData);
 exports.router.use(authController.restrictTo('admin'));
 exports.router
     .route('/')
-    .post((0, validator_1.validatorBody)(schema_1.createDataSchema), controller.aliasCreateData, controller.createData);
+    .get((0, validator_1.validatorQuery)(schema_1.getAllDataSchema), controller.aliasGetAllData, controller.getAllData)
+    .post((0, validator_1.validatorBody)(schema_1.createDataSchema), controller.createData);
 exports.router
     .route('/:id')
     .get(controller.getData)
-    .patch(controller.updateData)
+    .patch((0, validator_1.validatorBody)(schema_1.updateDataSchema), controller.updateData)
     .delete(controller.deleteData);

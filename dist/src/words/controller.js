@@ -28,7 +28,7 @@ const sequelize_1 = require("sequelize");
 const factory = __importStar(require("../_middlewares/service-factory"));
 const _db_1 = require("../_db");
 const aliasGetAllData = (req, res, next) => {
-    const { name, page, pageSize, order } = req.query;
+    const { page, pageSize, word } = req.query;
     const options = {
         page,
         pageSize,
@@ -62,13 +62,12 @@ const aliasGetAllData = (req, res, next) => {
             },
         ],
     };
-    if (name) {
-        options.where = {
-            name: { [sequelize_1.Op.like]: `%${name}%` },
-        };
-    }
-    if (order) {
-        options.order = [['order', order]];
+    switch (true) {
+        case typeof word === 'string' && word !== '':
+            options.where = {
+                word: { [sequelize_1.Op.like]: `%${word}%` },
+            };
+            break;
     }
     req.options = options;
     next();

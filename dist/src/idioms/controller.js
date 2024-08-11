@@ -24,27 +24,28 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteData = exports.updateData = exports.getData = exports.createData = exports.getAllData = exports.aliasGetAllData = void 0;
+const sequelize_1 = require("sequelize");
 const factory = __importStar(require("../_middlewares/service-factory"));
 const _db_1 = require("../_db");
 const aliasGetAllData = (req, res, next) => {
-    const { page, pageSize } = req.query;
+    const { page, pageSize, idiom } = req.query;
     const options = {
         page,
         pageSize,
-        include: [
-            {
-                model: _db_1.models.Word,
-                as: 'word',
-                attributes: ['id', 'word'],
-            },
-        ],
     };
+    switch (true) {
+        case typeof idiom === 'string' && idiom !== '':
+            options.where = {
+                idiom: { [sequelize_1.Op.like]: `%${idiom}%` },
+            };
+            break;
+    }
     req.options = options;
     next();
 };
 exports.aliasGetAllData = aliasGetAllData;
-exports.getAllData = factory.getAll(_db_1.models.Favorite);
-exports.createData = factory.createOne(_db_1.models.Favorite);
-exports.getData = factory.getOne(_db_1.models.Favorite);
-exports.updateData = factory.updateOne(_db_1.models.Favorite);
-exports.deleteData = factory.deleteOne(_db_1.models.Favorite);
+exports.getAllData = factory.getAll(_db_1.models.Idiom);
+exports.createData = factory.createOne(_db_1.models.Idiom);
+exports.getData = factory.getOne(_db_1.models.Idiom);
+exports.updateData = factory.updateOne(_db_1.models.Idiom);
+exports.deleteData = factory.deleteOne(_db_1.models.Idiom);

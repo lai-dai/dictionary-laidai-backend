@@ -40,9 +40,12 @@ exports.router.get('/me', controller.getMe, controller.getData);
 exports.router.patch('/updateMe', controller.uploadUserImage, controller.resizeUserImage, controller.updateMe);
 exports.router.delete('/deleteMe', controller.deleteMe);
 exports.router.use(authController.restrictTo('admin'));
-exports.router.route('/').get(controller.getAllData).post(controller.createData);
+exports.router
+    .route('/')
+    .get((0, validator_1.validatorQuery)(schema_1.getAllDataSchema), controller.aliasGetAllData, controller.getAllData)
+    .post((0, validator_1.validatorBody)(schema_1.createDataSchema), controller.createData);
 exports.router
     .route('/:id')
     .get(controller.getData)
-    .patch(controller.updateData)
+    .patch((0, validator_1.validatorBody)(schema_1.updateDataSchema), controller.updateData)
     .delete(controller.deleteData);
