@@ -25,6 +25,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const delve_1 = require("../_lib/utils/delve");
 const email_1 = require("../_lib/utils/email");
 const sequelize_1 = require("sequelize");
+const google_auth_library_1 = require("google-auth-library");
 const createSendToken = (user, statusCode, req, res, message) => {
     const token = (0, token_1.signToken)(user.id);
     res.cookie('jwt', token, {
@@ -181,7 +182,6 @@ exports.forgotPassword = (0, catch_async_1.catchAsync)((req, res, next) => __awa
         .createHash('sha256')
         .update(resetToken)
         .digest('hex');
-    console.log('🚀 resetToken', resetToken);
     user.setDataValue('passwordResetToken', passwordResetToken);
     user.setDataValue('passwordResetExpires', Date.now() + 10 * 60 * 1000);
     yield user.save();
@@ -218,7 +218,6 @@ exports.resetPassword = (0, catch_async_1.catchAsync)((req, res, next) => __awai
             passwordResetExpires: { [sequelize_1.Op.gt]: new Date() },
         },
     });
-    console.log('🚀 user', user === null || user === void 0 ? void 0 : user.dataValues);
     // 2) If token has not expired, and there is user, set the new password
     if (!user) {
         return next(new app_error_1.AppError('Token is invalid or has expired', http_status_codes_1.StatusCodes.BAD_REQUEST));
@@ -259,7 +258,6 @@ exports.updatePassword = (0, catch_async_1.catchAsync)((req, res, next) => __awa
     // 4) Log user in, send JWT
     createSendToken(user.dataValues, http_status_codes_1.StatusCodes.OK, req, res, 'Update password is successfully');
 }));
-const google_auth_library_1 = require("google-auth-library");
 const client = new google_auth_library_1.OAuth2Client();
 exports.verifyGoogleAccount = (0, catch_async_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { idToken } = req.body;

@@ -24,27 +24,42 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteData = exports.updateData = exports.getData = exports.createData = exports.getAllData = exports.aliasGetAllData = void 0;
+const sequelize_1 = require("sequelize");
 const factory = __importStar(require("../_middlewares/service-factory"));
 const _db_1 = require("../_db");
 const aliasGetAllData = (req, res, next) => {
-    const { page, pageSize } = req.query;
+    const { page, pageSize, content } = req.query;
     const options = {
         page,
         pageSize,
+        attributes: {
+            exclude: ['commentId', 'wordId'],
+        },
         include: [
             {
-                model: _db_1.models.Word,
-                as: 'word',
-                attributes: ['id', 'word'],
+                model: _db_1.models.Comment,
+                as: 'children',
+                include: factory.updateInclude(),
+                attributes: factory.updatedAttributes({
+                    exclude: ['commentId', 'wordId'],
+                }),
             },
         ],
+        where: { commentId: null },
     };
+    switch (true) {
+        case typeof content === 'string' && content !== '':
+            options.where = {
+                content: { [sequelize_1.Op.like]: `%${content}%` },
+            };
+            break;
+    }
     req.options = options;
     next();
 };
 exports.aliasGetAllData = aliasGetAllData;
-exports.getAllData = factory.getAll(_db_1.models.Favorite);
-exports.createData = factory.createOne(_db_1.models.Favorite);
-exports.getData = factory.getOne(_db_1.models.Favorite);
-exports.updateData = factory.updateOne(_db_1.models.Favorite);
-exports.deleteData = factory.deleteOne(_db_1.models.Favorite);
+exports.getAllData = factory.getAll(_db_1.models.Comment);
+exports.createData = factory.createOne(_db_1.models.Comment);
+exports.getData = factory.getOne(_db_1.models.Comment);
+exports.updateData = factory.updateOne(_db_1.models.Comment);
+exports.deleteData = factory.deleteOne(_db_1.models.Comment);

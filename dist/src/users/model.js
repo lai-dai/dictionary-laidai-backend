@@ -20,7 +20,7 @@ const UserModel = (sequelize) => sequelize.define(models_name_1.MODELS_NAME.USER
     },
     image: {
         type: sequelize_1.DataTypes.STRING,
-        defaultValue: 'default.jpg',
+        defaultValue: 'default',
     },
     role: {
         type: sequelize_1.DataTypes.ENUM('user', 'admin'),

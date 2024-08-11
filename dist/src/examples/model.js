@@ -10,11 +10,11 @@ const ExamplesModel = (sequelize) => sequelize.define(models_name_1.MODELS_NAME.
         primaryKey: true,
     },
     sentence: {
-        type: sequelize_1.DataTypes.STRING,
+        type: sequelize_1.DataTypes.TEXT('long'),
         allowNull: false,
     },
     translate: {
-        type: sequelize_1.DataTypes.STRING,
+        type: sequelize_1.DataTypes.TEXT('long'),
     },
 });
 exports.ExamplesModel = ExamplesModel;

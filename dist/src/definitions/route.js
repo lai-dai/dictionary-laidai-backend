@@ -31,7 +31,10 @@ const express_1 = __importDefault(require("express"));
 const controller = __importStar(require("./controller"));
 const validator_1 = require("../_middlewares/validator");
 const schema_1 = require("./schema");
+const authController = __importStar(require("../auth/controller"));
 exports.router = express_1.default.Router();
+exports.router.use(authController.protect);
+exports.router.use(authController.restrictTo('admin'));
 exports.router
     .route('/')
     .get((0, validator_1.validatorQuery)(schema_1.getAllDataSchema), controller.aliasGetAllData, controller.getAllData)

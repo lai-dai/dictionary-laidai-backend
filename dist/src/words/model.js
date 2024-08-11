@@ -12,12 +12,13 @@ const WordsModel = (sequelize) => sequelize.define(models_name_1.MODELS_NAME.WOR
     word: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
+        unique: true,
     },
     phonetic: {
         type: sequelize_1.DataTypes.STRING,
     },
     description: {
-        type: sequelize_1.DataTypes.STRING,
+        type: sequelize_1.DataTypes.TEXT('long'),
     },
 });
 exports.WordsModel = WordsModel;

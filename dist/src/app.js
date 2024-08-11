@@ -25,6 +25,8 @@ const route_5 = require("./definitions/route");
 const route_6 = require("./meanings/route");
 const route_7 = require("./words/route");
 const route_8 = require("./favorites/route");
+const route_9 = require("./idioms/route");
+const route_10 = require("./comments/route");
 exports.app = (0, express_1.default)();
 // app.enable('trust proxy')
 // 1) GLOBAL MIDDLEWARES
@@ -59,9 +61,6 @@ exports.app.use((0, express_mongo_sanitize_1.default)());
 exports.app.use((0, hpp_1.default)());
 exports.app.use((0, compression_1.default)());
 // ROUTES
-exports.app.use('/', (req, res, next) => {
-    next();
-});
 exports.app.use('/api/v1/auth', route_1.router);
 exports.app.use('/api/v1/users', route_2.router);
 exports.app.use('/api/v1/partOfSpeeches', route_3.router);
@@ -70,6 +69,8 @@ exports.app.use('/api/v1/definitions', route_5.router);
 exports.app.use('/api/v1/meanings', route_6.router);
 exports.app.use('/api/v1/words', route_7.router);
 exports.app.use('/api/v1/favorites', route_8.router);
+exports.app.use('/api/v1/idioms', route_9.router);
+exports.app.use('/api/v1/comments', route_10.router);
 exports.app.all('*', (req, res, next) => {
     next(new app_error_1.AppError(`Can't find ${req.originalUrl} on this server!`, http_status_codes_1.StatusCodes.NOT_FOUND));
 });

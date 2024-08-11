@@ -1,25 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PartOfSpeechesModel = void 0;
+exports.IdiomsModel = void 0;
 const sequelize_1 = require("sequelize");
 const models_name_1 = require("../_lib/constants/models-name");
-const PartOfSpeechesModel = (sequelize) => sequelize.define(models_name_1.MODELS_NAME.PART_OF_SPEECHES, {
+const IdiomsModel = (sequelize) => sequelize.define(models_name_1.MODELS_NAME.IDIOMS, {
     id: {
         type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true,
     },
-    name: {
+    idiom: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
         unique: true,
-    },
-    order: {
-        type: sequelize_1.DataTypes.INTEGER,
-        defaultValue: 1,
-    },
-    abbreviation: {
-        type: sequelize_1.DataTypes.STRING,
     },
     definition: {
         type: sequelize_1.DataTypes.STRING,
@@ -28,4 +21,4 @@ const PartOfSpeechesModel = (sequelize) => sequelize.define(models_name_1.MODELS
         type: sequelize_1.DataTypes.TEXT('long'),
     },
 });
-exports.PartOfSpeechesModel = PartOfSpeechesModel;
+exports.IdiomsModel = IdiomsModel;

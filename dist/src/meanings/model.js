@@ -9,5 +9,8 @@ const MeaningsModel = (sequelize) => sequelize.define(models_name_1.MODELS_NAME.
         autoIncrement: true,
         primaryKey: true,
     },
+    description: {
+        type: sequelize_1.DataTypes.TEXT('long'),
+    },
 });
 exports.MeaningsModel = MeaningsModel;

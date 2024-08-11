@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.orderSchema = exports.getAllCommonDataSchema = void 0;
+exports.roleSchema = exports.orderSchema = exports.getAllCommonDataSchema = void 0;
 const zod_1 = require("zod");
 const common_1 = require("../constants/common");
 exports.getAllCommonDataSchema = zod_1.z.object({
@@ -16,3 +16,4 @@ exports.getAllCommonDataSchema = zod_1.z.object({
         .refine((n) => n > 0, 'greater than 0'),
 });
 exports.orderSchema = zod_1.z.enum(['DESC', 'ASC']);
+exports.roleSchema = zod_1.z.enum(['user', 'admin']);

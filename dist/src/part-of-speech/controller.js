@@ -23,22 +23,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteData = exports.updateData = exports.getData = exports.createData = exports.getAllData = exports.aliasCreateData = exports.aliasGetAllData = void 0;
+exports.deleteData = exports.updateData = exports.getData = exports.createData = exports.getAllData = exports.aliasGetAllData = void 0;
 const sequelize_1 = require("sequelize");
 const factory = __importStar(require("../_middlewares/service-factory"));
 const _db_1 = require("../_db");
 const aliasGetAllData = (req, res, next) => {
-    const { name, page, pageSize, order } = req.query;
+    const { page, pageSize, name, order } = req.query;
     const options = {
         page,
         pageSize,
-        include: [
-            {
-                model: _db_1.models.User,
-                as: 'createdBy',
-                attributes: ['id', 'name', 'email', 'image', 'role'],
-            },
-        ],
     };
     switch (true) {
         case typeof name === 'string' && name !== '':
@@ -46,22 +39,15 @@ const aliasGetAllData = (req, res, next) => {
                 name: { [sequelize_1.Op.like]: `%${name}%` },
             };
             break;
-        case order === 'DESC' || order === 'ASC':
+        case order === 'DESC':
+        case order === 'ASC':
             options.order = [['order', order]];
-            break;
-        default:
             break;
     }
     req.options = options;
     next();
 };
 exports.aliasGetAllData = aliasGetAllData;
-const aliasCreateData = (req, res, next) => {
-    var _a;
-    req.body.createdById = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
-    next();
-};
-exports.aliasCreateData = aliasCreateData;
 exports.getAllData = factory.getAll(_db_1.models.PartOfSpeech);
 exports.createData = factory.createOne(_db_1.models.PartOfSpeech);
 exports.getData = factory.getOne(_db_1.models.PartOfSpeech);
