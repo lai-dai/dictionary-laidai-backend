@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { orderSchema } from '../schemas/common'
+import { orderSchema, roleSchema } from '../schemas/common'
 
 export type PaginationType = {
   page: number
@@ -17,3 +17,4 @@ export type ResBody<TList = any> = {
 }
 
 export type OrderType = z.infer<typeof orderSchema>
+export type RoleType = z.infer<typeof roleSchema>

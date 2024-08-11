@@ -1,30 +1,29 @@
-import { Op, WhereOptions } from 'sequelize'
-import { DataAttrType } from './type'
+import { AttrType } from './type'
 import * as factory from '../_middlewares/service-factory'
 import { RequestHandler } from 'express'
 import { models } from '../_db'
 
 export const aliasGetAllData: RequestHandler = (req, res, next) => {
-  const { page, pageSize } = req.query
+  const { page, pageSize } = req.query as any
 
-  const options: Record<string, any> = {
+  const options: factory.GetAllOptionsType<AttrType> = {
     page,
     pageSize,
-    // include: [
-    //   {
-    //     model: models.Definitions,
-    //     as: 'definition',
-    //     attributes: ['definition'],
-    //   },
-    // ] as IncludeOptions,
+    include: [
+      {
+        model: models.Word,
+        as: 'word',
+        attributes: ['id', 'word'],
+      },
+    ],
   }
 
   req.options = options
   next()
 }
 
-export const getAllData = factory.getAll(models.Example)
-export const createData = factory.createOne(models.Example)
-export const getData = factory.getOne(models.Example)
-export const updateData = factory.updateOne(models.Example)
-export const deleteData = factory.deleteOne(models.Example)
+export const getAllData = factory.getAll(models.Favorite)
+export const createData = factory.createOne(models.Favorite)
+export const getData = factory.getOne(models.Favorite)
+export const updateData = factory.updateOne(models.Favorite)
+export const deleteData = factory.deleteOne(models.Favorite)

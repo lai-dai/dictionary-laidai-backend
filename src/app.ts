@@ -12,7 +12,7 @@ import compression from 'compression'
 
 import { AppError } from './_lib/utils/app-error'
 import { globalError } from './_middlewares/global-error'
-import { DataAttr } from './users/type'
+import { AttrType as UserType } from './users/type'
 
 import { router as authRouter } from './auth/route'
 import { router as usersRouter } from './users/route'
@@ -22,12 +22,15 @@ import { router as definitionsRouter } from './definitions/route'
 import { router as meaningsRouter } from './meanings/route'
 import { router as wordsRouter } from './words/route'
 import { router as favoritesRouter } from './favorites/route'
+import { router as idiomsRouter } from './idioms/route'
+import { router as commentsRouter } from './comments/route'
+import { router as subCommentsRouter } from './sub-comments/route'
 
 declare global {
   namespace Express {
     export interface Request {
       options?: Record<string, any>
-      user?: DataAttr
+      user?: UserType
     }
   }
 }
@@ -79,9 +82,6 @@ app.use(hpp())
 app.use(compression())
 
 // ROUTES
-app.use('/', (req, res, next) => {
-  next()
-})
 app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/users', usersRouter)
 app.use('/api/v1/partOfSpeeches', partOfSpeechesRouter)
@@ -90,6 +90,9 @@ app.use('/api/v1/definitions', definitionsRouter)
 app.use('/api/v1/meanings', meaningsRouter)
 app.use('/api/v1/words', wordsRouter)
 app.use('/api/v1/favorites', favoritesRouter)
+app.use('/api/v1/idioms', idiomsRouter)
+app.use('/api/v1/comments', commentsRouter)
+app.use('/api/v1/subComments', subCommentsRouter)
 
 app.all('*', (req, res, next) => {
   next(

@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import { FindAttributeOptions } from 'sequelize'
+import { FindAttributeOptions, Op } from 'sequelize'
 import multer from 'multer'
 import sharp from 'sharp'
 
@@ -9,6 +9,7 @@ import { models } from '../_db'
 import { catchAsync } from '../_lib/utils/catch-async'
 import { AppError } from '../_lib/utils/app-error'
 import { STATUS_NAME } from '../_lib/constants/status-name'
+import { AttrType } from './type'
 
 const multerStorage = multer.memoryStorage()
 
@@ -134,16 +135,63 @@ export const deleteMe = catchAsync(async (req, res, next) => {
   })
 })
 
+export const aliasGetAllData: RequestHandler = (req, res, next) => {
+  const { page, pageSize, name, email, role, active, provider } =
+    req.query as any
+
+  const options: factory.GetAllOptionsType<AttrType> = {
+    page,
+    pageSize,
+  }
+
+  switch (true) {
+    case typeof name === 'string' && name !== '':
+      options.where = {
+        name: { [Op.like]: `%${name}%` },
+      }
+      break
+
+    case typeof email === 'string' && email !== '':
+      options.where = {
+        email: { [Op.like]: `%${email}%` },
+        ...options.where,
+      }
+      break
+
+    case typeof role === 'string' && role !== '':
+      options.where = {
+        role: { [Op.eq]: role },
+        ...options.where,
+      }
+      break
+
+    case typeof active === 'boolean':
+      options.where = {
+        active: { [Op.eq]: active },
+        ...options.where,
+      }
+      break
+
+    case typeof provider === 'string' && provider !== '':
+      options.where = {
+        provider: { [Op.eq]: provider },
+        ...options.where,
+      }
+      break
+  }
+
+  req.options = options
+  next()
+}
+
+export const getAllData = factory.getAll(models.User)
 export const createData: RequestHandler = (req, res) => {
   res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
     status: 'error',
     message: 'This route is not defined! Please use /register instead',
   })
 }
-
 export const getData = factory.getOne(models.User)
-export const getAllData = factory.getAll(models.User)
-
 // Do NOT update passwords with this!
 export const updateData = factory.updateOne(models.User)
 export const deleteData = factory.deleteOne(models.User)

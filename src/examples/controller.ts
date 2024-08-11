@@ -1,13 +1,13 @@
-import { Op, WhereOptions } from 'sequelize'
-import { DataAttrType } from './type'
+import { Op } from 'sequelize'
+import { AttrType } from './type'
 import * as factory from '../_middlewares/service-factory'
 import { RequestHandler } from 'express'
 import { models } from '../_db'
 
 export const aliasGetAllData: RequestHandler = (req, res, next) => {
-  const { page, pageSize, sentence, translate } = req.query
+  const { page, pageSize, sentence } = req.query as any
 
-  const options: Record<string, any> = {
+  const options: factory.GetAllOptionsType<AttrType> = {
     page,
     pageSize,
     // include: [
@@ -18,19 +18,13 @@ export const aliasGetAllData: RequestHandler = (req, res, next) => {
     //   },
     // ] as IncludeOptions,
   }
-  if (sentence) {
-    options.where = {
-      sentence: { [Op.like]: `%${sentence}%` },
-    } as WhereOptions<DataAttrType>
-  }
-  if (translate) {
-    if (options.where) {
-      options.where.translate = { [Op.like]: `%${translate}%` }
-    } else {
+
+  switch (true) {
+    case typeof sentence === 'string' && sentence !== '':
       options.where = {
-        translate: { [Op.like]: `%${translate}%` },
-      } as WhereOptions<DataAttrType>
-    }
+        sentence: { [Op.like]: `%${sentence}%` },
+      }
+      break
   }
 
   req.options = options

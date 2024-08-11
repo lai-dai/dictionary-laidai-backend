@@ -9,4 +9,7 @@ export const MeaningsModel = (sequelize: Sequelize) =>
       autoIncrement: true,
       primaryKey: true,
     },
+    description: {
+      type: DataTypes.TEXT('long'),
+    },
   })

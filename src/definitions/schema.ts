@@ -1,14 +1,19 @@
 import { z } from 'zod'
 import { getAllCommonDataSchema } from '../_lib/schemas/common'
 
+export const dataSchema = z.object({
+  id: z.number(),
+  definition: z.string(),
+})
+
 export const getAllDataSchema = getAllCommonDataSchema.merge(
-  z.object({
-    definition: z.string().optional(),
-    examplesIds: z.number().optional(),
-  })
+  dataSchema
+    .pick({
+      definition: true,
+    })
+    .partial()
 )
 
-export const createDataSchema = z.object({
-  definition: z.string(),
-  meaningId: z.number().optional(),
-})
+export const createDataSchema = dataSchema.omit({ id: true })
+
+export const updateDataSchema = createDataSchema.partial()

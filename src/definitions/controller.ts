@@ -1,27 +1,30 @@
-import { Op, WhereOptions, IncludeOptions } from 'sequelize'
-import { DataAttrType } from './type'
+import { Op } from 'sequelize'
+import { AttrType } from './type'
 import * as factory from '../_middlewares/service-factory'
 import { RequestHandler } from 'express'
 import { models } from '../_db'
 
 export const aliasGetAllData: RequestHandler = (req, res, next) => {
-  const { page, pageSize, definition, examplesIds } = req.query
+  const { page, pageSize, definition } = req.query as any
 
-  const options: Record<string, any> = {
+  const options: factory.GetAllOptionsType<AttrType> = {
     page,
     pageSize,
     include: [
       {
         model: models.Example,
         as: 'examples',
-        attributes: ['sentence', 'translate'],
+        attributes: ['id', 'sentence', 'translate'],
       },
-    ] as IncludeOptions,
+    ],
   }
-  if (definition) {
-    options.where = {
-      definition: { [Op.like]: `%${definition}%` },
-    } as WhereOptions<DataAttrType>
+
+  switch (true) {
+    case typeof definition === 'string' && definition !== '':
+      options.where = {
+        definition: { [Op.like]: `%${definition}%` },
+      }
+      break
   }
 
   // include: [{model: Tag, as: 'tags'}],

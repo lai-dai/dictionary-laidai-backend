@@ -1,13 +1,13 @@
-import { Op, WhereOptions, Order, IncludeOptions } from 'sequelize'
+import { Op } from 'sequelize'
 import { AttrType } from './type'
 import * as factory from '../_middlewares/service-factory'
 import { RequestHandler } from 'express'
 import { models } from '../_db'
 
 export const aliasGetAllData: RequestHandler = (req, res, next) => {
-  const { name, page, pageSize, order } = req.query
+  const { page, pageSize, word } = req.query as any
 
-  const options: Record<string, any> = {
+  const options: factory.GetAllOptionsType<AttrType> = {
     page,
     pageSize,
     attributes: {
@@ -38,16 +38,15 @@ export const aliasGetAllData: RequestHandler = (req, res, next) => {
           },
         ],
       },
-    ] as IncludeOptions,
-  }
-  if (name) {
-    options.where = {
-      name: { [Op.like]: `%${name}%` },
-    } as WhereOptions<AttrType>
+    ],
   }
 
-  if (order) {
-    options.order = [['order', order]] as Order
+  switch (true) {
+    case typeof word === 'string' && word !== '':
+      options.where = {
+        word: { [Op.like]: `%${word}%` },
+      }
+      break
   }
 
   req.options = options

@@ -1,29 +1,30 @@
 import { DataTypes, Model, Sequelize } from 'sequelize'
 import { MODELS_NAME } from '../_lib/constants/models-name'
-import { PartOfSpeechAttr } from './type'
+import { AttrType } from './type'
 
 export const PartOfSpeechesModel = (sequelize: Sequelize) =>
-  sequelize.define<Model<PartOfSpeechAttr>, PartOfSpeechAttr>(
-    MODELS_NAME.PART_OF_SPEECH,
-    {
-      id: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        autoIncrement: true,
-        primaryKey: true,
-      },
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      description: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        defaultValue: '',
-      },
-      order: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 1,
-      },
-    }
-  )
+  sequelize.define<Model<AttrType>, AttrType>(MODELS_NAME.PART_OF_SPEECHES, {
+    id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    order: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1,
+    },
+    abbreviation: {
+      type: DataTypes.STRING,
+    },
+    definition: {
+      type: DataTypes.STRING,
+    },
+    description: {
+      type: DataTypes.TEXT('long'),
+    },
+  })
