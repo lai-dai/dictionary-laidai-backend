@@ -75,7 +75,8 @@ sequelize
           role: 'admin',
           active: true,
           provider: 'credentials',
-          password: process.env.ADMIN_PASSWORD,
+          password:
+            '$2a$10$hOcJBqQOWPJxhGpDjeIdjuhiYB1gPTn/GVNINwtWT2/y7jhDvn36m',
         })
       }
     })
