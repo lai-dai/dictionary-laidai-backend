@@ -1,21 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WordsModel = void 0;
+exports.PhoneticsModel = void 0;
 const sequelize_1 = require("sequelize");
 const models_name_1 = require("../_lib/constants/models-name");
-const WordsModel = (sequelize) => sequelize.define(models_name_1.MODELS_NAME.WORDS, {
+const PhoneticsModel = (sequelize) => sequelize.define(models_name_1.MODELS_NAME.PHONETICS, {
     id: {
         type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true,
     },
-    word: {
+    phonetic: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
-        unique: true,
     },
-    description: {
-        type: sequelize_1.DataTypes.TEXT('long'),
+    audio: {
+        type: sequelize_1.DataTypes.STRING,
     },
 });
-exports.WordsModel = WordsModel;
+exports.PhoneticsModel = PhoneticsModel;

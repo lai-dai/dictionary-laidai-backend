@@ -19,6 +19,9 @@ var __rest = (this && this.__rest) || function (s, e) {
         }
     return t;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteOne = exports.updateOne = exports.getOneBySlug = exports.getOne = exports.createOne = exports.getAll = void 0;
 exports.updateInclude = updateInclude;
@@ -28,6 +31,7 @@ const http_status_codes_1 = require("http-status-codes");
 const app_error_1 = require("../_lib/utils/app-error");
 const status_name_1 = require("../_lib/constants/status-name");
 const _db_1 = require("../_db");
+const qs_1 = __importDefault(require("qs"));
 const getAll = (Model) => (0, catch_async_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const _a = req.options || {}, { pageSize, page, include = [], attributes } = _a, opts = __rest(_a, ["pageSize", "page", "include", "attributes"]);
     const { count, rows } = yield Model.findAndCountAll(Object.assign({ limit: pageSize, offset: (page - 1) * pageSize, include: updateInclude(include), attributes: updatedAttributes(attributes) }, opts));
@@ -103,16 +107,41 @@ const updateOne = (Model) => (0, catch_async_1.catchAsync)((req, res, next) => _
 exports.updateOne = updateOne;
 const deleteOne = (Model) => (0, catch_async_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const doc = yield Model.findByPk(id);
-    if (!doc) {
-        return next(new app_error_1.AppError('No document found with that ID', http_status_codes_1.StatusCodes.NOT_FOUND));
+    if (Number.isNaN(+id)) {
+        const idsObj = qs_1.default.parse(id);
+        if ('ids' in idsObj &&
+            Array.isArray(idsObj.ids) &&
+            idsObj.ids.length > 0) {
+            const { count, rows } = yield Model.findAndCountAll({
+                where: { id: idsObj.ids },
+            });
+            const resultIds = rows.map((e) => e.dataValues.id);
+            yield Model.destroy({ where: { id: resultIds } });
+            res.status(http_status_codes_1.StatusCodes.OK).json({
+                status: status_name_1.STATUS_NAME.SUCCESS,
+                message: 'Delete many data successfully',
+                data: {
+                    list: resultIds,
+                    total: count,
+                },
+            });
+        }
+        else {
+            next();
+        }
     }
-    yield Model.destroy({ where: { id: id } });
-    res.status(http_status_codes_1.StatusCodes.OK).json({
-        status: status_name_1.STATUS_NAME.SUCCESS,
-        message: 'Delete data successfully',
-        data: doc,
-    });
+    else {
+        const doc = yield Model.findByPk(id);
+        if (!doc) {
+            return next(new app_error_1.AppError('No document found with that ID', http_status_codes_1.StatusCodes.NOT_FOUND));
+        }
+        yield Model.destroy({ where: { id: id } });
+        res.status(http_status_codes_1.StatusCodes.OK).json({
+            status: status_name_1.STATUS_NAME.SUCCESS,
+            message: 'Delete data successfully',
+            data: doc,
+        });
+    }
 }));
 exports.deleteOne = deleteOne;
 function updateInclude(include) {
