@@ -12,6 +12,7 @@ const model_6 = require("../users/model");
 const model_7 = require("../favorites/model");
 const model_8 = require("../idioms/model");
 const model_9 = require("../comments/model");
+const model_10 = require("../phonetics/model");
 exports.sequelize = new sequelize_1.Sequelize(config_1.options);
 exports.models = {
     User: (0, model_6.UserModel)(exports.sequelize),
@@ -23,24 +24,28 @@ exports.models = {
     Favorite: (0, model_7.FavoritesModel)(exports.sequelize),
     Idiom: (0, model_8.IdiomsModel)(exports.sequelize),
     Comment: (0, model_9.CommentsModel)(exports.sequelize),
+    Phonetic: (0, model_10.PhoneticsModel)(exports.sequelize),
 };
 exports.models.PartOfSpeech.belongsTo(exports.models.User, { as: 'createdBy' });
-exports.models.Example.belongsTo(exports.models.User, { as: 'createdBy' });
-exports.models.Definition.belongsTo(exports.models.User, { as: 'createdBy' });
-exports.models.Meaning.belongsTo(exports.models.User, { as: 'createdBy' });
 exports.models.Word.belongsTo(exports.models.User, { as: 'createdBy' });
+exports.models.Phonetic.belongsTo(exports.models.User, { as: 'createdBy' });
 exports.models.Idiom.belongsTo(exports.models.User, { as: 'createdBy' });
+exports.models.Meaning.belongsTo(exports.models.User, { as: 'createdBy' });
+exports.models.Definition.belongsTo(exports.models.User, { as: 'createdBy' });
+exports.models.Example.belongsTo(exports.models.User, { as: 'createdBy' });
 exports.models.Comment.belongsTo(exports.models.User, { as: 'createdBy' });
-exports.models.Example.belongsTo(exports.models.Word, { as: 'word' });
-exports.models.Definition.belongsTo(exports.models.Word, { as: 'word' });
-exports.models.Meaning.belongsTo(exports.models.Word, { as: 'word' });
+exports.models.Phonetic.belongsTo(exports.models.Word, { as: 'word' });
 exports.models.Idiom.belongsTo(exports.models.Word, { as: 'word' });
+exports.models.Meaning.belongsTo(exports.models.Word, { as: 'word' });
+exports.models.Definition.belongsTo(exports.models.Word, { as: 'word' });
+exports.models.Example.belongsTo(exports.models.Word, { as: 'word' });
 exports.models.Comment.belongsTo(exports.models.Word, { as: 'word' });
 exports.models.Comment.hasMany(exports.models.Comment, { as: 'children' });
 exports.models.Idiom.hasMany(exports.models.Example, { as: 'examples' });
 exports.models.Definition.hasMany(exports.models.Example, { as: 'examples' });
 exports.models.Meaning.belongsTo(exports.models.PartOfSpeech, { as: 'partOfSpeech' });
 exports.models.Meaning.hasMany(exports.models.Definition, { as: 'definitions' });
+exports.models.Word.hasMany(exports.models.Phonetic, { as: 'phonetics' });
 exports.models.Word.hasMany(exports.models.Meaning, { as: 'meanings' });
 exports.models.Word.hasMany(exports.models.Idiom, { as: 'idioms' });
 exports.models.Favorite.belongsTo(exports.models.User);
@@ -62,7 +67,7 @@ exports.sequelize
                 role: 'admin',
                 active: true,
                 provider: 'credentials',
-                password: '$2a$10$hOcJBqQOWPJxhGpDjeIdjuhiYB1gPTn/GVNINwtWT2/y7jhDvn36m',
+                password: process.env.ADMIN_PASSWORD,
             });
         }
     });

@@ -5,6 +5,7 @@ import {
   Attributes,
   FindOptions,
   Includeable,
+  Op,
 } from 'sequelize'
 
 import { catchAsync } from '../_lib/utils/catch-async'
@@ -13,6 +14,8 @@ import { AppError } from '../_lib/utils/app-error'
 import { STATUS_NAME } from '../_lib/constants/status-name'
 import { models } from '../_db'
 import { FindAttributeOptions } from 'sequelize'
+import qs from 'qs'
+import QueryString from 'qs'
 
 export type GetAllOptionsType<TAttr extends Record<string, any>> = Omit<
   FindAndCountOptions<Attributes<ModelType<TAttr, TAttr>>>,
@@ -164,21 +167,49 @@ export const deleteOne = <DataAttr extends Record<string, any>>(
   catchAsync(async (req, res, next) => {
     const { id } = req.params
 
-    const doc = await Model.findByPk(id)
+    if (Number.isNaN(+id)) {
+      const idsObj = QueryString.parse(id)
+      if (
+        'ids' in idsObj &&
+        Array.isArray(idsObj.ids) &&
+        idsObj.ids.length > 0
+      ) {
+        const { count, rows } = await Model.findAndCountAll({
+          where: { id: idsObj.ids } as any,
+        })
 
-    if (!doc) {
-      return next(
-        new AppError('No document found with that ID', StatusCodes.NOT_FOUND)
-      )
+        const resultIds = rows.map((e) => e.dataValues.id)
+
+        await Model.destroy({ where: { id: resultIds } as any })
+
+        res.status(StatusCodes.OK).json({
+          status: STATUS_NAME.SUCCESS,
+          message: 'Delete many data successfully',
+          data: {
+            list: resultIds,
+            total: count,
+          },
+        })
+      } else {
+        next()
+      }
+    } else {
+      const doc = await Model.findByPk(id)
+
+      if (!doc) {
+        return next(
+          new AppError('No document found with that ID', StatusCodes.NOT_FOUND)
+        )
+      }
+
+      await Model.destroy({ where: { id: id as any } })
+
+      res.status(StatusCodes.OK).json({
+        status: STATUS_NAME.SUCCESS,
+        message: 'Delete data successfully',
+        data: doc,
+      })
     }
-
-    await Model.destroy({ where: { id: id as any } })
-
-    res.status(StatusCodes.OK).json({
-      status: STATUS_NAME.SUCCESS,
-      message: 'Delete data successfully',
-      data: doc,
-    })
   })
 
 export function updateInclude(include?: Includeable | Includeable[]) {

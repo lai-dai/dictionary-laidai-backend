@@ -10,9 +10,9 @@ exports.getAllDataSchema = common_1.getAllCommonDataSchema.merge(zod_1.z.object(
 exports.dataSchema = zod_1.z.object({
     id: zod_1.z.number(),
     name: zod_1.z.string().transform((e) => e === null || e === void 0 ? void 0 : e.toLowerCase()),
-    order: zod_1.z.number(),
+    order: zod_1.z.number().min(1, 'greater than 1'),
     abbreviation: zod_1.z.string().optional(),
-    definition: zod_1.z.string().optional(),
+    translate: zod_1.z.string().optional(),
     description: zod_1.z.string().optional(),
 });
 exports.createDataSchema = exports.dataSchema.omit({ id: true });

@@ -12,5 +12,8 @@ exports.getAllDataSchema = common_1.getAllCommonDataSchema.merge(exports.dataSch
     definition: true,
 })
     .partial());
-exports.createDataSchema = exports.dataSchema.omit({ id: true });
+exports.createDataSchema = exports.dataSchema.omit({ id: true }).merge(zod_1.z.object({
+    wordId: zod_1.z.number(),
+    meaningId: zod_1.z.number(),
+}));
 exports.updateDataSchema = exports.createDataSchema.partial();

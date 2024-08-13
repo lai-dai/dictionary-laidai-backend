@@ -4,7 +4,6 @@ import { getAllCommonDataSchema } from '../_lib/schemas/common'
 export const dataSchema = z.object({
   id: z.number(),
   word: z.string().transform((e) => e?.toLowerCase()),
-  phonetic: z.string().optional(),
   description: z.number().optional(),
 })
 

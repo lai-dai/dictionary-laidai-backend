@@ -14,6 +14,7 @@ exports.getAllCommonDataSchema = zod_1.z.object({
         .or(zod_1.z.string().regex(/^\d+$/, 'number').transform(Number))
         .default(common_1.DEFAULT_PAGE_SIZE)
         .refine((n) => n > 0, 'greater than 0'),
+    key: zod_1.z.string().optional(),
 });
-exports.orderSchema = zod_1.z.enum(['DESC', 'ASC']);
+exports.orderSchema = zod_1.z.enum(['DESC', 'ASC', '']);
 exports.roleSchema = zod_1.z.enum(['user', 'admin']);

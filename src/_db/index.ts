@@ -9,6 +9,7 @@ import { UserModel } from '../users/model'
 import { FavoritesModel } from '../favorites/model'
 import { IdiomsModel } from '../idioms/model'
 import { CommentsModel } from '../comments/model'
+import { PhoneticsModel } from '../phonetics/model'
 
 export const sequelize = new Sequelize(options)
 
@@ -22,20 +23,23 @@ export const models = {
   Favorite: FavoritesModel(sequelize),
   Idiom: IdiomsModel(sequelize),
   Comment: CommentsModel(sequelize),
+  Phonetic: PhoneticsModel(sequelize),
 }
 
 models.PartOfSpeech.belongsTo(models.User, { as: 'createdBy' })
-models.Example.belongsTo(models.User, { as: 'createdBy' })
-models.Definition.belongsTo(models.User, { as: 'createdBy' })
-models.Meaning.belongsTo(models.User, { as: 'createdBy' })
 models.Word.belongsTo(models.User, { as: 'createdBy' })
+models.Phonetic.belongsTo(models.User, { as: 'createdBy' })
 models.Idiom.belongsTo(models.User, { as: 'createdBy' })
+models.Meaning.belongsTo(models.User, { as: 'createdBy' })
+models.Definition.belongsTo(models.User, { as: 'createdBy' })
+models.Example.belongsTo(models.User, { as: 'createdBy' })
 models.Comment.belongsTo(models.User, { as: 'createdBy' })
 
-models.Example.belongsTo(models.Word, { as: 'word' })
-models.Definition.belongsTo(models.Word, { as: 'word' })
-models.Meaning.belongsTo(models.Word, { as: 'word' })
+models.Phonetic.belongsTo(models.Word, { as: 'word' })
 models.Idiom.belongsTo(models.Word, { as: 'word' })
+models.Meaning.belongsTo(models.Word, { as: 'word' })
+models.Definition.belongsTo(models.Word, { as: 'word' })
+models.Example.belongsTo(models.Word, { as: 'word' })
 models.Comment.belongsTo(models.Word, { as: 'word' })
 
 models.Comment.hasMany(models.Comment, { as: 'children' })
@@ -47,6 +51,7 @@ models.Definition.hasMany(models.Example, { as: 'examples' })
 models.Meaning.belongsTo(models.PartOfSpeech, { as: 'partOfSpeech' })
 models.Meaning.hasMany(models.Definition, { as: 'definitions' })
 
+models.Word.hasMany(models.Phonetic, { as: 'phonetics' })
 models.Word.hasMany(models.Meaning, { as: 'meanings' })
 models.Word.hasMany(models.Idiom, { as: 'idioms' })
 
@@ -70,8 +75,7 @@ sequelize
           role: 'admin',
           active: true,
           provider: 'credentials',
-          password:
-            '$2a$10$hOcJBqQOWPJxhGpDjeIdjuhiYB1gPTn/GVNINwtWT2/y7jhDvn36m',
+          password: process.env.ADMIN_PASSWORD,
         })
       }
     })

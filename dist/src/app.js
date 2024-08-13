@@ -27,6 +27,7 @@ const route_7 = require("./words/route");
 const route_8 = require("./favorites/route");
 const route_9 = require("./idioms/route");
 const route_10 = require("./comments/route");
+const route_11 = require("./phonetics/route");
 exports.app = (0, express_1.default)();
 // app.enable('trust proxy')
 // 1) GLOBAL MIDDLEWARES
@@ -71,6 +72,7 @@ exports.app.use('/api/v1/words', route_7.router);
 exports.app.use('/api/v1/favorites', route_8.router);
 exports.app.use('/api/v1/idioms', route_9.router);
 exports.app.use('/api/v1/comments', route_10.router);
+exports.app.use('/api/v1/phonetics', route_11.router);
 exports.app.all('*', (req, res, next) => {
     next(new app_error_1.AppError(`Can't find ${req.originalUrl} on this server!`, http_status_codes_1.StatusCodes.NOT_FOUND));
 });

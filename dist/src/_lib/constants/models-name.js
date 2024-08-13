@@ -12,5 +12,5 @@ exports.MODELS_NAME = {
     FAVORITES: 'favorites',
     IDIOMS: 'idioms',
     COMMENTS: 'comments',
-    SUB_COMMENTS: 'sub_comments',
+    PHONETICS: 'phonetics',
 };

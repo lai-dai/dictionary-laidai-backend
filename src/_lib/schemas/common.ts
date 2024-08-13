@@ -12,8 +12,9 @@ export const getAllCommonDataSchema = z.object({
     .or(z.string().regex(/^\d+$/, 'number').transform(Number))
     .default(DEFAULT_PAGE_SIZE)
     .refine((n) => n > 0, 'greater than 0'),
+  key: z.string().optional(),
 })
 
-export const orderSchema = z.enum(['DESC', 'ASC'])
+export const orderSchema = z.enum(['DESC', 'ASC', ''])
 
 export const roleSchema = z.enum(['user', 'admin'])
