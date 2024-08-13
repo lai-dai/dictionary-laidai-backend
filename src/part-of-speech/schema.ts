@@ -11,9 +11,9 @@ export const getAllDataSchema = getAllCommonDataSchema.merge(
 export const dataSchema = z.object({
   id: z.number(),
   name: z.string().transform((e) => e?.toLowerCase()),
-  order: z.number(),
+  order: z.number().min(1, 'greater than 1'),
   abbreviation: z.string().optional(),
-  definition: z.string().optional(),
+  translate: z.string().optional(),
   description: z.string().optional(),
 })
 

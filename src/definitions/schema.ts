@@ -14,6 +14,11 @@ export const getAllDataSchema = getAllCommonDataSchema.merge(
     .partial()
 )
 
-export const createDataSchema = dataSchema.omit({ id: true })
+export const createDataSchema = dataSchema.omit({ id: true }).merge(
+  z.object({
+    wordId: z.number(),
+    meaningId: z.number(),
+  })
+)
 
 export const updateDataSchema = createDataSchema.partial()

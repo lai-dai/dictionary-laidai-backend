@@ -21,7 +21,7 @@ export const PartOfSpeechesModel = (sequelize: Sequelize) =>
     abbreviation: {
       type: DataTypes.STRING,
     },
-    definition: {
+    translate: {
       type: DataTypes.STRING,
     },
     description: {
