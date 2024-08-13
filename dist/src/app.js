@@ -29,7 +29,7 @@ const route_9 = require("./idioms/route");
 const route_10 = require("./comments/route");
 const route_11 = require("./phonetics/route");
 exports.app = (0, express_1.default)();
-// app.enable('trust proxy')
+exports.app.set('trust proxy', 1 /* number of proxies between user and server */);
 // 1) GLOBAL MIDDLEWARES
 // Implement CORS
 exports.app.use((0, cors_1.default)());

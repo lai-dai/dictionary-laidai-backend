@@ -37,7 +37,8 @@ declare global {
 
 export const app = express()
 
-// app.enable('trust proxy')
+app.set('trust proxy', 1 /* number of proxies between user and server */)
+
 
 // 1) GLOBAL MIDDLEWARES
 // Implement CORS
