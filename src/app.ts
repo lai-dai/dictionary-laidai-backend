@@ -39,10 +39,22 @@ export const app = express()
 
 app.set('trust proxy', 1 /* number of proxies between user and server */)
 
-
 // 1) GLOBAL MIDDLEWARES
 // Implement CORS
-app.use(cors())
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      return callback(null, true)
+    },
+    optionsSuccessStatus: 200,
+    credentials: true,
+    allowedHeaders: [
+      'Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token, X-Requested-With',
+    ],
+    preflightContinue: true,
+    methods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
+  })
+)
 
 app.options('*', cors())
 
