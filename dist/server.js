@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config({ path: './.env.local' });
+dotenv_1.default.config({ path: '.env.local' });
 process.on('uncaughtException', (err) => {
     console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
     console.log(err.name, err.message);

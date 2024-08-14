@@ -1,5 +1,5 @@
 import dotenv from 'dotenv'
-dotenv.config({ path: './.env.local' })
+dotenv.config({ path: '.env.local' })
 
 process.on('uncaughtException', (err) => {
   console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...')
