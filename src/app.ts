@@ -56,7 +56,21 @@ app.use(
   })
 )
 
-// app.options('*', cors())
+// app.options(
+//   '*',
+//   cors({
+//     origin: function (origin, callback) {
+//       return callback(null, true)
+//     },
+//     optionsSuccessStatus: 200,
+//     credentials: true,
+//     allowedHeaders: [
+//       'Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token, X-Requested-With',
+//     ],
+//     preflightContinue: true,
+//     methods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
+//   })
+// )
 
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')))
@@ -116,14 +130,14 @@ router.route('/').get((res, req) => {
 })
 app.use('/test', router)
 
-// app.all('*', (req, res, next) => {
-//   next(
-//     new AppError(
-//       `Can't find ${req.originalUrl} on this server!`,
-//       StatusCodes.NOT_FOUND
-//     )
-//   )
-// })
+app.all('*', (req, res, next) => {
+  next(
+    new AppError(
+      `Can't find ${req.originalUrl} on this server!`,
+      StatusCodes.NOT_FOUND
+    )
+  )
+})
 
 // global error handler
 app.use(globalError)
