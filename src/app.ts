@@ -37,7 +37,7 @@ declare global {
 
 export const app = express()
 
-// app.set('trust proxy', 1 /* number of proxies between user and server */)
+app.set('trust proxy', 1 /* number of proxies between user and server */)
 
 // 1) GLOBAL MIDDLEWARES
 // Implement CORS
@@ -56,21 +56,21 @@ app.use(
   })
 )
 
-app.options(
-  '*',
-  cors({
-    origin: function (origin, callback) {
-      return callback(null, true)
-    },
-    optionsSuccessStatus: 200,
-    credentials: true,
-    allowedHeaders: [
-      'Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token, X-Requested-With',
-    ],
-    preflightContinue: true,
-    methods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
-  })
-)
+// app.options(
+//   '*',
+//   cors({
+//     origin: function (origin, callback) {
+//       return callback(null, true)
+//     },
+//     optionsSuccessStatus: 200,
+//     credentials: true,
+//     allowedHeaders: [
+//       'Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token, X-Requested-With',
+//     ],
+//     preflightContinue: true,
+//     methods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
+//   })
+// )
 
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')))
@@ -106,7 +106,7 @@ app.use(mongoSanitize())
 // Prevent parameter pollution
 app.use(hpp())
 
-// app.use(compression())
+app.use(compression())
 
 // ROUTES
 app.use('/api/v1/auth', authRouter)

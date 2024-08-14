@@ -14,6 +14,7 @@ const hpp_1 = __importDefault(require("hpp"));
 const path_1 = __importDefault(require("path"));
 const http_status_codes_1 = require("http-status-codes");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const compression_1 = __importDefault(require("compression"));
 const app_error_1 = require("./_lib/utils/app-error");
 const global_error_1 = require("./_middlewares/global-error");
 const route_1 = require("./auth/route");
@@ -28,7 +29,7 @@ const route_9 = require("./idioms/route");
 const route_10 = require("./comments/route");
 const route_11 = require("./phonetics/route");
 exports.app = (0, express_1.default)();
-// app.set('trust proxy', 1 /* number of proxies between user and server */)
+exports.app.set('trust proxy', 1 /* number of proxies between user and server */);
 // 1) GLOBAL MIDDLEWARES
 // Implement CORS
 exports.app.use((0, cors_1.default)({
@@ -43,18 +44,21 @@ exports.app.use((0, cors_1.default)({
     preflightContinue: true,
     methods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
 }));
-exports.app.options('*', (0, cors_1.default)({
-    origin: function (origin, callback) {
-        return callback(null, true);
-    },
-    optionsSuccessStatus: 200,
-    credentials: true,
-    allowedHeaders: [
-        'Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token, X-Requested-With',
-    ],
-    preflightContinue: true,
-    methods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
-}));
+// app.options(
+//   '*',
+//   cors({
+//     origin: function (origin, callback) {
+//       return callback(null, true)
+//     },
+//     optionsSuccessStatus: 200,
+//     credentials: true,
+//     allowedHeaders: [
+//       'Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token, X-Requested-With',
+//     ],
+//     preflightContinue: true,
+//     methods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
+//   })
+// )
 // Serving static files
 exports.app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
 // Set security HTTP headers
@@ -81,7 +85,7 @@ exports.app.use((0, express_mongo_sanitize_1.default)());
 // app.use(xss())
 // Prevent parameter pollution
 exports.app.use((0, hpp_1.default)());
-// app.use(compression())
+exports.app.use((0, compression_1.default)());
 // ROUTES
 exports.app.use('/api/v1/auth', route_1.router);
 exports.app.use('/api/v1/users', route_2.router);
