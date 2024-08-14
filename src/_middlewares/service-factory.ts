@@ -213,7 +213,7 @@ export const deleteOne = <DataAttr extends Record<string, any>>(
   })
 
 export function updateInclude(include?: Includeable | Includeable[]) {
-  let result: Includeable[] = [
+  let result: any = [
     {
       model: models.User,
       as: 'createdBy',
@@ -221,26 +221,29 @@ export function updateInclude(include?: Includeable | Includeable[]) {
     },
   ]
 
+  if (!include) return result
+
   switch (true) {
-    case Array.isArray(include):
+    case include && Array.isArray(include):
       result = result.concat(include)
       break
 
-    case typeof include === 'object':
+    case include && typeof include === 'object':
       result = [...result, include]
       break
   }
 
-  return result
+  return result as Includeable[]
 }
 
 export function updatedAttributes(
-  attributes?: FindAttributeOptions,
+  attributes?: any,
   initExclude?: string[]
 ) {
-  const result: FindAttributeOptions = {
+  const result: any = {
     exclude: ['createdById'],
   }
+  if (!attributes) return result
 
   switch (true) {
     case Array.isArray(initExclude):
@@ -269,5 +272,5 @@ export function updatedAttributes(
       break
   }
 
-  return result
+  return result as FindAttributeOptions
 }

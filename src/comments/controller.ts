@@ -17,7 +17,7 @@ export const aliasGetAllData: RequestHandler = (req, res, next) => {
       {
         model: models.Comment,
         as: 'children',
-        include: factory.updateInclude(),
+        include: factory.updateInclude() as any,
         attributes: factory.updatedAttributes({
           exclude: ['commentId', 'wordId'],
         }),

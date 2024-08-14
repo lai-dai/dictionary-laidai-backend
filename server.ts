@@ -9,7 +9,7 @@ process.on('uncaughtException', (err) => {
 
 import { app } from './src/app'
 
-const port = process.env.PORT || 5000
+const port = process.env.PORT || 3000
 const server = app.listen(port, () => {
   console.log('🚀 App is running on port', port)
 })
@@ -28,3 +28,5 @@ process.on('SIGTERM', () => {
     console.log('💥 Process terminated!')
   })
 })
+
+export const serverApp = app
