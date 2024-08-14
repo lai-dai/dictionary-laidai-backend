@@ -12,8 +12,9 @@ const helmet_1 = __importDefault(require("helmet"));
 const express_mongo_sanitize_1 = __importDefault(require("express-mongo-sanitize"));
 const hpp_1 = __importDefault(require("hpp"));
 const path_1 = __importDefault(require("path"));
+const http_status_codes_1 = require("http-status-codes");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
-const compression_1 = __importDefault(require("compression"));
+const app_error_1 = require("./_lib/utils/app-error");
 const global_error_1 = require("./_middlewares/global-error");
 const route_1 = require("./auth/route");
 const route_2 = require("./users/route");
@@ -27,7 +28,7 @@ const route_9 = require("./idioms/route");
 const route_10 = require("./comments/route");
 const route_11 = require("./phonetics/route");
 exports.app = (0, express_1.default)();
-exports.app.set('trust proxy', 1 /* number of proxies between user and server */);
+// app.set('trust proxy', 1 /* number of proxies between user and server */)
 // 1) GLOBAL MIDDLEWARES
 // Implement CORS
 exports.app.use((0, cors_1.default)({
@@ -42,7 +43,18 @@ exports.app.use((0, cors_1.default)({
     preflightContinue: true,
     methods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
 }));
-// app.options('*', cors())
+exports.app.options('*', (0, cors_1.default)({
+    origin: function (origin, callback) {
+        return callback(null, true);
+    },
+    optionsSuccessStatus: 200,
+    credentials: true,
+    allowedHeaders: [
+        'Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token, X-Requested-With',
+    ],
+    preflightContinue: true,
+    methods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
+}));
 // Serving static files
 exports.app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
 // Set security HTTP headers
@@ -69,7 +81,7 @@ exports.app.use((0, express_mongo_sanitize_1.default)());
 // app.use(xss())
 // Prevent parameter pollution
 exports.app.use((0, hpp_1.default)());
-exports.app.use((0, compression_1.default)());
+// app.use(compression())
 // ROUTES
 exports.app.use('/api/v1/auth', route_1.router);
 exports.app.use('/api/v1/users', route_2.router);
@@ -89,13 +101,8 @@ router.route('/').get((res, req) => {
     });
 });
 exports.app.use('/test', router);
-// app.all('*', (req, res, next) => {
-//   next(
-//     new AppError(
-//       `Can't find ${req.originalUrl} on this server!`,
-//       StatusCodes.NOT_FOUND
-//     )
-//   )
-// })
+exports.app.all('*', (req, res, next) => {
+    next(new app_error_1.AppError(`Can't find ${req.originalUrl} on this server!`, http_status_codes_1.StatusCodes.NOT_FOUND));
+});
 // global error handler
 exports.app.use(global_error_1.globalError);
