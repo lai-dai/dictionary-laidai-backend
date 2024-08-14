@@ -12,10 +12,8 @@ const helmet_1 = __importDefault(require("helmet"));
 const express_mongo_sanitize_1 = __importDefault(require("express-mongo-sanitize"));
 const hpp_1 = __importDefault(require("hpp"));
 const path_1 = __importDefault(require("path"));
-const http_status_codes_1 = require("http-status-codes");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const compression_1 = __importDefault(require("compression"));
-const app_error_1 = require("./_lib/utils/app-error");
 const global_error_1 = require("./_middlewares/global-error");
 const route_1 = require("./auth/route");
 const route_2 = require("./users/route");
@@ -44,7 +42,7 @@ exports.app.use((0, cors_1.default)({
     preflightContinue: true,
     methods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
 }));
-exports.app.options('*', (0, cors_1.default)());
+// app.options('*', cors())
 // Serving static files
 exports.app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
 // Set security HTTP headers
@@ -84,8 +82,13 @@ exports.app.use('/api/v1/favorites', route_8.router);
 exports.app.use('/api/v1/idioms', route_9.router);
 exports.app.use('/api/v1/comments', route_10.router);
 exports.app.use('/api/v1/phonetics', route_11.router);
-exports.app.all('*', (req, res, next) => {
-    next(new app_error_1.AppError(`Can't find ${req.originalUrl} on this server!`, http_status_codes_1.StatusCodes.NOT_FOUND));
-});
+// app.all('*', (req, res, next) => {
+//   next(
+//     new AppError(
+//       `Can't find ${req.originalUrl} on this server!`,
+//       StatusCodes.NOT_FOUND
+//     )
+//   )
+// })
 // global error handler
 exports.app.use(global_error_1.globalError);

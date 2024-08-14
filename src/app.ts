@@ -56,7 +56,7 @@ app.use(
   })
 )
 
-app.options('*', cors())
+// app.options('*', cors())
 
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')))
@@ -107,14 +107,14 @@ app.use('/api/v1/idioms', idiomsRouter)
 app.use('/api/v1/comments', commentsRouter)
 app.use('/api/v1/phonetics', phoneticsRouter)
 
-app.all('*', (req, res, next) => {
-  next(
-    new AppError(
-      `Can't find ${req.originalUrl} on this server!`,
-      StatusCodes.NOT_FOUND
-    )
-  )
-})
+// app.all('*', (req, res, next) => {
+//   next(
+//     new AppError(
+//       `Can't find ${req.originalUrl} on this server!`,
+//       StatusCodes.NOT_FOUND
+//     )
+//   )
+// })
 
 // global error handler
 app.use(globalError)
