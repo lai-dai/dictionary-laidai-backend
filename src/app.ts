@@ -107,6 +107,15 @@ app.use('/api/v1/idioms', idiomsRouter)
 app.use('/api/v1/comments', commentsRouter)
 app.use('/api/v1/phonetics', phoneticsRouter)
 
+const router = express.Router()
+
+router.route('/').get((res, req) => {
+  req.status(200).json({
+    message: 'Done',
+  })
+})
+app.use('/test', router)
+
 // app.all('*', (req, res, next) => {
 //   next(
 //     new AppError(

@@ -82,6 +82,13 @@ exports.app.use('/api/v1/favorites', route_8.router);
 exports.app.use('/api/v1/idioms', route_9.router);
 exports.app.use('/api/v1/comments', route_10.router);
 exports.app.use('/api/v1/phonetics', route_11.router);
+const router = express_1.default.Router();
+router.route('/').get((res, req) => {
+    req.status(200).json({
+        message: 'Done',
+    });
+});
+exports.app.use('/test', router);
 // app.all('*', (req, res, next) => {
 //   next(
 //     new AppError(
