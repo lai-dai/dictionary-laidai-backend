@@ -42,7 +42,7 @@ exports.app.use((0, cors_1.default)({
     //     return callback(null, true)
     //   }
     // },
-    // origin: 'https://dictionary.laidai.xyz',
+    origin: process.env.BASE_URL,
     optionsSuccessStatus: 200,
     credentials: true,
     allowedHeaders: [
