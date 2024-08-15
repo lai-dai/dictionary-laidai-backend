@@ -45,25 +45,24 @@ app.set('trust proxy', 1 /* number of proxies between user and server */)
 //   'http://localhost:3000',
 //   'https://dictionary.laidai.xyz',
 // ]
-app.use(
-  cors({
-    // origin: function (origin, callback) {
-    //   if (origin && allowedDomains.includes(origin)) {
-    //     return callback(null, true)
-    //   }
-    // },
-    origin: process.env.BASE_URL,
-    optionsSuccessStatus: 200,
-    credentials: true,
-    allowedHeaders: [
-      'Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token, X-Requested-With',
-    ],
-    preflightContinue: true,
-    methods: ['POST', 'GET', 'PATCH', 'DELETE', 'OPTIONS'],
-  })
-)
-
-app.options('*', cors())
+// app.use(
+//   cors({
+//     // origin: function (origin, callback) {
+//     //   if (origin && allowedDomains.includes(origin)) {
+//     //     return callback(null, true)
+//     //   }
+//     // },
+//     origin: process.env.BASE_URL,
+//     optionsSuccessStatus: 200,
+//     credentials: true,
+//     allowedHeaders: [
+//       'Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token, X-Requested-With',
+//     ],
+//     preflightContinue: true,
+//     methods: ['POST', 'GET', 'PATCH', 'DELETE', 'OPTIONS'],
+//   })
+// )
+app.use(cors())
 
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')))
@@ -113,15 +112,6 @@ app.use('/api/v1/favorites', favoritesRouter)
 app.use('/api/v1/idioms', idiomsRouter)
 app.use('/api/v1/comments', commentsRouter)
 app.use('/api/v1/phonetics', phoneticsRouter)
-
-const router = express.Router()
-
-router.route('/').get((res, req) => {
-  req.status(200).json({
-    message: 'Done',
-  })
-})
-app.use('/test', router)
 
 app.all('*', (req, res, next) => {
   next(

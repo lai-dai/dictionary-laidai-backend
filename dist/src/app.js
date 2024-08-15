@@ -36,22 +36,24 @@ exports.app.set('trust proxy', 1 /* number of proxies between user and server */
 //   'http://localhost:3000',
 //   'https://dictionary.laidai.xyz',
 // ]
-exports.app.use((0, cors_1.default)({
-    // origin: function (origin, callback) {
-    //   if (origin && allowedDomains.includes(origin)) {
-    //     return callback(null, true)
-    //   }
-    // },
-    origin: process.env.BASE_URL,
-    optionsSuccessStatus: 200,
-    credentials: true,
-    allowedHeaders: [
-        'Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token, X-Requested-With',
-    ],
-    preflightContinue: true,
-    methods: ['POST', 'GET', 'PATCH', 'DELETE', 'OPTIONS'],
-}));
-exports.app.options('*', (0, cors_1.default)());
+// app.use(
+//   cors({
+//     // origin: function (origin, callback) {
+//     //   if (origin && allowedDomains.includes(origin)) {
+//     //     return callback(null, true)
+//     //   }
+//     // },
+//     origin: process.env.BASE_URL,
+//     optionsSuccessStatus: 200,
+//     credentials: true,
+//     allowedHeaders: [
+//       'Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token, X-Requested-With',
+//     ],
+//     preflightContinue: true,
+//     methods: ['POST', 'GET', 'PATCH', 'DELETE', 'OPTIONS'],
+//   })
+// )
+exports.app.use((0, cors_1.default)());
 // Serving static files
 exports.app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
 // Set security HTTP headers
@@ -91,13 +93,6 @@ exports.app.use('/api/v1/favorites', route_8.router);
 exports.app.use('/api/v1/idioms', route_9.router);
 exports.app.use('/api/v1/comments', route_10.router);
 exports.app.use('/api/v1/phonetics', route_11.router);
-const router = express_1.default.Router();
-router.route('/').get((res, req) => {
-    req.status(200).json({
-        message: 'Done',
-    });
-});
-exports.app.use('/test', router);
 exports.app.all('*', (req, res, next) => {
     next(new app_error_1.AppError(`Can't find ${req.originalUrl} on this server!`, http_status_codes_1.StatusCodes.NOT_FOUND));
 });
