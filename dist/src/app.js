@@ -32,33 +32,26 @@ exports.app = (0, express_1.default)();
 exports.app.set('trust proxy', 1 /* number of proxies between user and server */);
 // 1) GLOBAL MIDDLEWARES
 // Implement CORS
+// const allowedDomains = [
+//   'http://localhost:3000',
+//   'https://dictionary.laidai.xyz',
+// ]
 exports.app.use((0, cors_1.default)({
-    origin: function (origin, callback) {
-        return callback(null, true);
-    },
+    // origin: function (origin, callback) {
+    //   if (origin && allowedDomains.includes(origin)) {
+    //     return callback(null, true)
+    //   }
+    // },
+    // origin: 'https://dictionary.laidai.xyz',
     optionsSuccessStatus: 200,
     credentials: true,
     allowedHeaders: [
         'Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token, X-Requested-With',
     ],
     preflightContinue: true,
-    methods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
+    methods: ['POST', 'GET', 'PATCH', 'DELETE', 'OPTIONS'],
 }));
-// app.options(
-//   '*',
-//   cors({
-//     origin: function (origin, callback) {
-//       return callback(null, true)
-//     },
-//     optionsSuccessStatus: 200,
-//     credentials: true,
-//     allowedHeaders: [
-//       'Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token, X-Requested-With',
-//     ],
-//     preflightContinue: true,
-//     methods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
-//   })
-// )
+exports.app.options('*', (0, cors_1.default)());
 // Serving static files
 exports.app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
 // Set security HTTP headers

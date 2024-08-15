@@ -41,36 +41,29 @@ app.set('trust proxy', 1 /* number of proxies between user and server */)
 
 // 1) GLOBAL MIDDLEWARES
 // Implement CORS
+// const allowedDomains = [
+//   'http://localhost:3000',
+//   'https://dictionary.laidai.xyz',
+// ]
 app.use(
   cors({
-    origin: function (origin, callback) {
-      return callback(null, true)
-    },
+    // origin: function (origin, callback) {
+    //   if (origin && allowedDomains.includes(origin)) {
+    //     return callback(null, true)
+    //   }
+    // },
+    // origin: 'https://dictionary.laidai.xyz',
     optionsSuccessStatus: 200,
     credentials: true,
     allowedHeaders: [
       'Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token, X-Requested-With',
     ],
     preflightContinue: true,
-    methods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
+    methods: ['POST', 'GET', 'PATCH', 'DELETE', 'OPTIONS'],
   })
 )
 
-// app.options(
-//   '*',
-//   cors({
-//     origin: function (origin, callback) {
-//       return callback(null, true)
-//     },
-//     optionsSuccessStatus: 200,
-//     credentials: true,
-//     allowedHeaders: [
-//       'Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token, X-Requested-With',
-//     ],
-//     preflightContinue: true,
-//     methods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
-//   })
-// )
+app.options('*', cors())
 
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')))
