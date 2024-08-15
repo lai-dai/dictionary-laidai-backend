@@ -194,4 +194,4 @@ export const createData: RequestHandler = (req, res) => {
 export const getData = factory.getOne(models.User)
 // Do NOT update passwords with this!
 export const updateData = factory.updateOne(models.User)
-export const deleteData = factory.deleteOne(models.User)
+export const deleteData = factory.deleteOneAndMany(models.User)

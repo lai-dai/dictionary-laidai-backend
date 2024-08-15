@@ -8,6 +8,8 @@ process.on('uncaughtException', (err) => {
 })
 
 import { app } from './src/app'
+import { initDB } from './src/_db'
+initDB()
 
 const port = process.env.PORT || 3000
 const server = app.listen(port, () => {
@@ -28,5 +30,3 @@ process.on('SIGTERM', () => {
     console.log('💥 Process terminated!')
   })
 })
-
-export const serverApp = app

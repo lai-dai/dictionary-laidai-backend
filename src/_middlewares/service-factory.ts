@@ -5,7 +5,6 @@ import {
   Attributes,
   FindOptions,
   Includeable,
-  Op,
 } from 'sequelize'
 
 import { catchAsync } from '../_lib/utils/catch-async'
@@ -14,7 +13,6 @@ import { AppError } from '../_lib/utils/app-error'
 import { STATUS_NAME } from '../_lib/constants/status-name'
 import { models } from '../_db'
 import { FindAttributeOptions } from 'sequelize'
-import qs from 'qs'
 import QueryString from 'qs'
 
 export type GetAllOptionsType<TAttr extends Record<string, any>> = Omit<
@@ -40,8 +38,9 @@ export const getAll = <DataAttr extends Record<string, any>>(
     const { count, rows } = await Model.findAndCountAll({
       limit: pageSize,
       offset: (page - 1) * pageSize,
-      include: updateInclude(include),
-      attributes: updatedAttributes(attributes),
+      include: Model.name === 'users' ? include : updateInclude(include),
+      attributes:
+        Model.name === 'users' ? attributes : updatedAttributes(attributes),
       ...opts,
     })
 
@@ -88,8 +87,9 @@ export const getOne = <DataAttr extends Record<string, any>>(
     const { include = [], attributes, ...opts } = req.options || {}
 
     const doc = await Model.findByPk(id, {
-      include: updateInclude(include),
-      attributes: updatedAttributes(attributes),
+      include: Model.name === 'users' ? include : updateInclude(include),
+      attributes:
+        Model.name === 'users' ? attributes : updatedAttributes(attributes),
       ...opts,
     })
 
@@ -118,8 +118,9 @@ export const getOneBySlug = <DataAttr extends Record<string, any>>(
 
     const doc = await Model.findOne({
       where: { slug: slug, ...where },
-      include: updateInclude(include),
-      attributes: updatedAttributes(attributes),
+      include: Model.name === 'users' ? include : updateInclude(include),
+      attributes:
+        Model.name === 'users' ? attributes : updatedAttributes(attributes),
       ...opts,
     })
 
@@ -161,7 +162,7 @@ export const updateOne = <DataAttr extends Record<string, any>>(
     })
   })
 
-export const deleteOne = <DataAttr extends Record<string, any>>(
+export const deleteOneAndMany = <DataAttr extends Record<string, any>>(
   Model: ModelStatic<ModelType<DataAttr, DataAttr>>
 ) =>
   catchAsync(async (req, res, next) => {
@@ -213,15 +214,13 @@ export const deleteOne = <DataAttr extends Record<string, any>>(
   })
 
 export function updateInclude(include?: Includeable | Includeable[]) {
-  let result: any = [
+  let result: Includeable[] = [
     {
       model: models.User,
       as: 'createdBy',
       attributes: ['id', 'name', 'email', 'image', 'role'],
     },
   ]
-
-  if (!include) return result
 
   switch (true) {
     case include && Array.isArray(include):
@@ -233,17 +232,16 @@ export function updateInclude(include?: Includeable | Includeable[]) {
       break
   }
 
-  return result as Includeable[]
+  return result
 }
 
 export function updatedAttributes(
-  attributes?: any,
+  attributes?: FindAttributeOptions,
   initExclude?: string[]
 ) {
-  const result: any = {
+  const result: FindAttributeOptions = {
     exclude: ['createdById'],
   }
-  if (!attributes) return result
 
   switch (true) {
     case Array.isArray(initExclude):
@@ -272,5 +270,5 @@ export function updatedAttributes(
       break
   }
 
-  return result as FindAttributeOptions
+  return result
 }
