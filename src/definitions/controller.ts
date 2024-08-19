@@ -6,7 +6,8 @@ import { RequestHandler } from 'express'
 import { models } from '../_db'
 
 export const aliasGetAllData: RequestHandler = (req, res, next) => {
-  const { page, pageSize, key, definition, meaningId } = req.query as any
+  const { page, pageSize, key, definition, meaningId, wordId } =
+    req.query as any
 
   const options: servicesFactory.GetAllOptionsType<AttrType> = {
     page,
@@ -39,6 +40,13 @@ export const aliasGetAllData: RequestHandler = (req, res, next) => {
     options.where = {
       ...options.where,
       meaningId: { [Op.eq]: meaningId },
+    }
+  }
+
+  if (typeof wordId === 'number' && wordId !== 0) {
+    options.where = {
+      ...options.where,
+      wordId: { [Op.eq]: wordId },
     }
   }
 

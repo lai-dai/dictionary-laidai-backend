@@ -9,8 +9,16 @@ export const dataSchema = commonDataSchema.merge(
     id: z.number(),
     definition: z.string(),
     image: z.string().optional(),
-    wordId: z.number().min(1, 'greater than 0').optional(),
-    meaningId: z.number().min(1, 'greater than 0').optional(),
+    wordId: z
+      .string()
+      .or(z.number().min(1, 'greater than 0'))
+      .transform(Number)
+      .optional(),
+    meaningId: z
+      .string()
+      .or(z.number().min(1, 'greater than 0'))
+      .transform(Number)
+      .optional(),
   })
 )
 
@@ -18,6 +26,8 @@ export const getAllDataSchema = getAllCommonDataSchema.merge(
   dataSchema
     .pick({
       definition: true,
+      wordId: true,
+      meaningId: true,
     })
     .partial()
 )

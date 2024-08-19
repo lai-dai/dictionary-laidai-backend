@@ -6,7 +6,7 @@ import { RequestHandler } from 'express'
 import { models } from '../_db'
 
 export const aliasGetAllData: RequestHandler = (req, res, next) => {
-  const { page, pageSize, idiom } = req.query as any
+  const { page, pageSize, key, idiom, wordId } = req.query as any
 
   const options: servicesFactory.GetAllOptionsType<AttrType> = {
     page,
@@ -14,11 +14,25 @@ export const aliasGetAllData: RequestHandler = (req, res, next) => {
   }
 
   switch (true) {
+    case typeof key === 'string' && key !== '':
+      options.where = {
+        ...options.where,
+        idiom: { [Op.like]: `%${key}%` },
+      }
+      break
+
     case typeof idiom === 'string' && idiom !== '':
       options.where = {
         idiom: { [Op.like]: `%${idiom}%` },
       }
       break
+  }
+
+  if (typeof wordId === 'number' && wordId !== 0) {
+    options.where = {
+      ...options.where,
+      wordId: { [Op.eq]: wordId },
+    }
   }
 
   req.options = options

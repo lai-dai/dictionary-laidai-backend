@@ -1,4 +1,4 @@
-import * as serviceFactory from './services-factory'
+import * as servicesFactory from './services-factory'
 import * as sendsFactory from './sends-factory'
 import { catchAsync } from '../_lib/utils/catch-async'
 import { AppError } from '../_lib/utils/app-error'
@@ -10,7 +10,7 @@ export const getAllData = <DataAttr extends Record<string, any>>(
   Model: ModelStatic<ModelType<DataAttr, DataAttr>>
 ) =>
   catchAsync(async (req, res, next) => {
-    req.data = await serviceFactory.getAll(Model)(req.options)
+    req.data = await servicesFactory.getAll(Model)(req.options)
 
     sendsFactory.getAllSend(req, res, next)
   })
@@ -26,7 +26,7 @@ export const createData = <DataAttr extends Record<string, any>>(
           return record
         })
 
-        const docs = await serviceFactory.createMany(Model)(records)
+        const docs = await servicesFactory.createMany(Model)(records)
 
         req.data = docs
         sendsFactory.createSend(req, res, next)
@@ -35,7 +35,7 @@ export const createData = <DataAttr extends Record<string, any>>(
       case req.body instanceof Object:
         req.body.createdById = req.user?.id
 
-        const doc = await serviceFactory.createOne(Model)(req.body)
+        const doc = await servicesFactory.createOne(Model)(req.body)
 
         req.data = doc
         sendsFactory.createSend(req, res, next)
@@ -51,7 +51,7 @@ export const getData = <DataAttr extends Record<string, any>>(
   Model: ModelStatic<ModelType<DataAttr, DataAttr>>
 ) =>
   catchAsync(async (req, res, next) => {
-    const doc = await serviceFactory.getOne(Model)(req.params.id, req.options)
+    const doc = await servicesFactory.getOne(Model)(req.params.id, req.options)
 
     if (!doc) {
       return next(
@@ -69,7 +69,7 @@ export const updateData = <DataAttr extends Record<string, any>>(
   catchAsync(async (req, res, next) => {
     req.body.createdById = req.user?.id
 
-    const doc = await serviceFactory.updateOne(Model)(req.params.id, req.body)
+    const doc = await servicesFactory.updateOne(Model)(req.params.id, req.body)
 
     if (!doc) {
       return next(
@@ -95,7 +95,7 @@ export const deleteData = <DataAttr extends Record<string, any>>(
         Array.isArray(idsObj.ids) &&
         idsObj.ids.length > 0
       ) {
-        const data = await serviceFactory.deleteMany(Model)(idsObj.ids)
+        const data = await servicesFactory.deleteMany(Model)(idsObj.ids)
 
         req.data = data
         sendsFactory.deleteSend(req, res, next)
@@ -103,7 +103,7 @@ export const deleteData = <DataAttr extends Record<string, any>>(
         next(new AppError('ids in valid', StatusCodes.NOT_FOUND))
       }
     } else {
-      const doc = await serviceFactory.deleteOne(Model)(id)
+      const doc = await servicesFactory.deleteOne(Model)(id)
 
       req.data = doc
       sendsFactory.deleteSend(req, res, next)

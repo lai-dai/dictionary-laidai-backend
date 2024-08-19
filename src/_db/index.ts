@@ -10,6 +10,7 @@ import { FavoritesModel } from '../favorites/model'
 import { IdiomsModel } from '../idioms/model'
 import { CommentsModel } from '../comments/model'
 import { PhoneticsModel } from '../phonetics/model'
+import { PART_OF_SPEECHES } from '../_lib/data/init-data'
 
 export const sequelize = new Sequelize(options)
 
@@ -70,9 +71,9 @@ export function initDB() {
     .then(() => {
       console.log('Connection has been established successfully.')
 
-      models.User.findByPk(1).then((res) => {
+      models.User.findByPk(1).then(async (res) => {
         if (!res) {
-          models.User.create({
+          await models.User.create({
             id: 1,
             name: 'Lại Đài',
             email: 'laidai9966@gmail.com',
@@ -83,6 +84,8 @@ export function initDB() {
             password:
               '$2a$10$hOcJBqQOWPJxhGpDjeIdjuhiYB1gPTn/GVNINwtWT2/y7jhDvn36m',
           })
+
+          await models.PartOfSpeech.bulkCreate(PART_OF_SPEECHES)
         }
       })
     })

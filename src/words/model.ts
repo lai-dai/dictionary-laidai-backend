@@ -19,5 +19,6 @@ export const WordsModel = (sequelize: Sequelize) =>
     },
     totalView: {
       type: DataTypes.INTEGER,
+      defaultValue: 0,
     },
   })
