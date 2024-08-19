@@ -28,14 +28,7 @@ exports.models = {
     Phonetic: (0, model_10.PhoneticsModel)(exports.sequelize),
 };
 function initDB() {
-    exports.sequelize
-        .authenticate()
-        .then(() => {
-        console.log('Connection has been established successfully.');
-    })
-        .catch((error) => {
-        console.error('Unable to connect to the database: ', error);
-    });
+    exports.sequelize.authenticate();
     exports.models.PartOfSpeech.belongsTo(exports.models.User, { as: 'createdBy' });
     exports.models.Word.belongsTo(exports.models.User, { as: 'createdBy' });
     exports.models.Phonetic.belongsTo(exports.models.User, { as: 'createdBy' });
@@ -67,6 +60,7 @@ function initDB() {
         // alter: true,
     })
         .then(() => {
+        console.log('Connection has been established successfully.');
         exports.models.User.findByPk(1).then((res) => {
             if (!res) {
                 exports.models.User.create({

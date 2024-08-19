@@ -7,6 +7,7 @@ exports.dataSchema = zod_1.z.object({
     id: zod_1.z.number(),
     phonetic: zod_1.z.string().transform((e) => e === null || e === void 0 ? void 0 : e.toLowerCase()),
     audio: zod_1.z.string().optional(),
+    description: zod_1.z.string().optional(),
 });
 exports.getAllDataSchema = common_1.getAllCommonDataSchema.merge(exports.dataSchema
     .pick({

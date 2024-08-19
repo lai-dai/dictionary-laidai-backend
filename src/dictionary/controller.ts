@@ -5,7 +5,34 @@ import * as servicesFactory from '../_middlewares/services-factory'
 import { RequestHandler } from 'express'
 import { models } from '../_db'
 
-export const aliasIncludeData: RequestHandler = (req, res, next) => {
+export const aliasIncludeGetAllData: RequestHandler = (req, res, next) => {
+  const options = req.options || {}
+
+  options.include = [
+    {
+      model: models.Meaning,
+      as: 'meanings',
+      attributes: ['id'],
+      include: [
+        {
+          model: models.PartOfSpeech,
+          as: 'partOfSpeech',
+          attributes: ['id', 'name'],
+        },
+        {
+          model: models.Definition,
+          as: 'definitions',
+          attributes: ['id', 'definition'],
+        },
+      ],
+    },
+  ] as servicesFactory.GetAllOptionsType<AttrType>['include']
+
+  req.options = options
+  next()
+}
+
+export const aliasIncludeGetData: RequestHandler = (req, res, next) => {
   const options = req.options || {}
 
   options.include = [

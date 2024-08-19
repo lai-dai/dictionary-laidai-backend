@@ -1,6 +1,6 @@
 import express from 'express'
 import morgan from 'morgan'
-import cors from 'cors'
+import cors, { CorsOptions } from 'cors'
 import rateLimit from 'express-rate-limit'
 import helmet from 'helmet'
 import mongoSanitize from 'express-mongo-sanitize'
@@ -25,12 +25,14 @@ import { router as favoritesRouter } from './favorites/route'
 import { router as idiomsRouter } from './idioms/route'
 import { router as commentsRouter } from './comments/route'
 import { router as phoneticsRouter } from './phonetics/route'
+import { router as dictionaryRouter } from './dictionary/route'
 
 declare global {
   namespace Express {
     export interface Request {
       options?: Record<string, any>
       user?: UserType
+      data?: Record<string, any>
     }
   }
 }
@@ -40,29 +42,25 @@ export const app = express()
 app.set('trust proxy', 1 /* number of proxies between user and server */)
 
 // 1) GLOBAL MIDDLEWARES
+const corsOptions: CorsOptions = {
+  origin: function (origin, callback) {
+    return callback(null, true)
+  },
+  optionsSuccessStatus: 200,
+  credentials: true,
+  allowedHeaders:
+    'append,delete,entries,foreach,get,has,keys,set,values,Authorization,Accept,Content-Type,Content-Length,Accept-Encoding',
+  //  [
+  //   'Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token, X-Requested-With',
+  // ],
+  // preflightContinue: true,
+  methods: 'POST, GET, OPTIONS, DELETE, PATCH, PUT',
+}
 // Implement CORS
-// const allowedDomains = [
-//   'http://localhost:3000',
-//   'https://dictionary.laidai.xyz',
-// ]
-// app.use(
-//   cors({
-//     // origin: function (origin, callback) {
-//     //   if (origin && allowedDomains.includes(origin)) {
-//     //     return callback(null, true)
-//     //   }
-//     // },
-//     origin: process.env.BASE_URL,
-//     optionsSuccessStatus: 200,
-//     credentials: true,
-//     allowedHeaders: [
-//       'Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token, X-Requested-With',
-//     ],
-//     preflightContinue: true,
-//     methods: ['POST', 'GET', 'PATCH', 'DELETE', 'OPTIONS'],
-//   })
-// )
-app.use(cors())
+app.use(cors(corsOptions))
+
+// Handle OPTIONS requests
+app.options('*', cors()) // Respond to preflight requests
 
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')))
@@ -112,6 +110,7 @@ app.use('/api/v1/favorites', favoritesRouter)
 app.use('/api/v1/idioms', idiomsRouter)
 app.use('/api/v1/comments', commentsRouter)
 app.use('/api/v1/phonetics', phoneticsRouter)
+app.use('/api/v1/dictionary', dictionaryRouter)
 
 app.all('*', (req, res, next) => {
   next(

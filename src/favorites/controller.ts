@@ -1,12 +1,13 @@
 import { AttrType } from './type'
-import * as factory from '../_middlewares/service-factory'
+import * as handlersFactory from '../_middlewares/handlers-factory'
+import * as servicesFactory from '../_middlewares/services-factory'
 import { RequestHandler } from 'express'
 import { models } from '../_db'
 
 export const aliasGetAllData: RequestHandler = (req, res, next) => {
   const { page, pageSize } = req.query as any
 
-  const options: factory.GetAllOptionsType<AttrType> = {
+  const options: servicesFactory.GetAllOptionsType<AttrType> = {
     page,
     pageSize,
     include: [
@@ -22,8 +23,8 @@ export const aliasGetAllData: RequestHandler = (req, res, next) => {
   next()
 }
 
-export const getAllData = factory.getAll(models.Favorite)
-export const createData = factory.createOne(models.Favorite)
-export const getData = factory.getOne(models.Favorite)
-export const updateData = factory.updateOne(models.Favorite)
-export const deleteData = factory.deleteOneAndMany(models.Favorite)
+export const getAllData = handlersFactory.getAllData(models.Favorite)
+export const createData = handlersFactory.createData(models.Favorite)
+export const getData = handlersFactory.getData(models.Favorite)
+export const updateData = handlersFactory.updateData(models.Favorite)
+export const deleteData = handlersFactory.deleteData(models.Favorite)

@@ -1,13 +1,14 @@
 import { Op } from 'sequelize'
 import { AttrType } from './type'
-import * as factory from '../_middlewares/service-factory'
+import * as handlersFactory from '../_middlewares/handlers-factory'
+import * as servicesFactory from '../_middlewares/services-factory'
 import { RequestHandler } from 'express'
 import { models } from '../_db'
 
 export const aliasGetAllData: RequestHandler = (req, res, next) => {
   const { page, pageSize, content } = req.query as any
 
-  const options: factory.GetAllOptionsType<AttrType> = {
+  const options: servicesFactory.GetAllOptionsType<AttrType> = {
     page,
     pageSize,
     attributes: {
@@ -17,8 +18,8 @@ export const aliasGetAllData: RequestHandler = (req, res, next) => {
       {
         model: models.Comment,
         as: 'children',
-        include: factory.updateInclude() as any,
-        attributes: factory.updatedAttributes({
+        include: servicesFactory.updateInclude() as any,
+        attributes: servicesFactory.updatedAttributes({
           exclude: ['commentId', 'wordId'],
         }),
       },
@@ -38,8 +39,8 @@ export const aliasGetAllData: RequestHandler = (req, res, next) => {
   next()
 }
 
-export const getAllData = factory.getAll(models.Comment)
-export const createData = factory.createOne(models.Comment)
-export const getData = factory.getOne(models.Comment)
-export const updateData = factory.updateOne(models.Comment)
-export const deleteData = factory.deleteOneAndMany(models.Comment)
+export const getAllData = handlersFactory.getAllData(models.Comment)
+export const createData = handlersFactory.createData(models.Comment)
+export const getData = handlersFactory.getData(models.Comment)
+export const updateData = handlersFactory.updateData(models.Comment)
+export const deleteData = handlersFactory.deleteData(models.Comment)

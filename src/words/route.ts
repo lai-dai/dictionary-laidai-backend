@@ -2,11 +2,7 @@ import express from 'express'
 
 import * as controller from './controller'
 import { validatorBody, validatorQuery } from '../_middlewares/validator'
-import {
-  createDataSchema,
-  getAllDataSchema,
-  updateDataSchema,
-} from './schema'
+import { createAttrSchema, getAllAttrSchema, updateAttrSchema } from './schema'
 import * as authController from '../auth/controller'
 
 export const router = express.Router()
@@ -17,14 +13,14 @@ router.use(authController.restrictTo('admin'))
 router
   .route('/')
   .get(
-    validatorQuery(getAllDataSchema),
+    validatorQuery(getAllAttrSchema),
     controller.aliasGetAllData,
     controller.getAllData
   )
-  .post(validatorBody(createDataSchema), controller.createData)
+  .post(validatorBody(createAttrSchema), controller.createData)
 
 router
   .route('/:id')
   .get(controller.getData)
-  .patch(validatorBody(updateDataSchema), controller.updateData)
+  .patch(validatorBody(updateAttrSchema), controller.updateData)
   .delete(controller.deleteData)

@@ -1,22 +1,19 @@
 import { z } from 'zod'
-import { getAllCommonDataSchema } from '../_lib/schemas/common'
+import {
+  getAllCommonDataSchema,
+  commonDataSchema,
+} from '../_lib/schemas/common'
+
+export const dataSchema = commonDataSchema.merge(
+  z.object({
+    description: z.string().optional(),
+    wordId: z.number().optional(),
+    partOfSpeechId: z.number().optional(),
+  })
+)
 
 export const getAllDataSchema = getAllCommonDataSchema
 
-export const dataSchema = z.object({
-  id: z.number(),
-  description: z.string().optional(),
-})
-
-export const createDataSchema = dataSchema
-  .pick({
-    description: true,
-  })
-  .merge(
-    z.object({
-      wordId: z.number(),
-      partOfSpeechId: z.number(),
-    })
-  )
+export const createDataSchema = dataSchema.omit({ id: true })
 
 export const updateDataSchema = createDataSchema.partial()

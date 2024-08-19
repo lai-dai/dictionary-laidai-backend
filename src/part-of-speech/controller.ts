@@ -1,13 +1,14 @@
-import { Op, Order, IncludeOptions } from 'sequelize'
+import { Op, Order } from 'sequelize'
 import { AttrType } from './type'
-import * as factory from '../_middlewares/service-factory'
+import * as handlersFactory from '../_middlewares/handlers-factory'
+import * as servicesFactory from '../_middlewares/services-factory'
 import { RequestHandler } from 'express'
 import { models } from '../_db'
 
 export const aliasGetAllData: RequestHandler = (req, res, next) => {
   const { page, pageSize, name, order } = req.query as any
 
-  const options: factory.GetAllOptionsType<AttrType> = {
+  const options: servicesFactory.GetAllOptionsType<AttrType> = {
     page,
     pageSize,
   }
@@ -29,8 +30,8 @@ export const aliasGetAllData: RequestHandler = (req, res, next) => {
   next()
 }
 
-export const getAllData = factory.getAll(models.PartOfSpeech)
-export const createData = factory.createOne(models.PartOfSpeech)
-export const getData = factory.getOne(models.PartOfSpeech)
-export const updateData = factory.updateOne(models.PartOfSpeech)
-export const deleteData = factory.deleteOneAndMany(models.PartOfSpeech)
+export const getAllData = handlersFactory.getAllData(models.PartOfSpeech)
+export const createData = handlersFactory.createData(models.PartOfSpeech)
+export const getData = handlersFactory.getData(models.PartOfSpeech)
+export const updateData = handlersFactory.updateData(models.PartOfSpeech)
+export const deleteData = handlersFactory.deleteData(models.PartOfSpeech)

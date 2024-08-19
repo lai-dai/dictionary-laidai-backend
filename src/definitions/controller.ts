@@ -1,13 +1,14 @@
 import { Op } from 'sequelize'
 import { AttrType } from './type'
-import * as factory from '../_middlewares/service-factory'
+import * as handlersFactory from '../_middlewares/handlers-factory'
+import * as servicesFactory from '../_middlewares/services-factory'
 import { RequestHandler } from 'express'
 import { models } from '../_db'
 
 export const aliasGetAllData: RequestHandler = (req, res, next) => {
-  const { page, pageSize, definition } = req.query as any
+  const { page, pageSize, key, definition, meaningId } = req.query as any
 
-  const options: factory.GetAllOptionsType<AttrType> = {
+  const options: servicesFactory.GetAllOptionsType<AttrType> = {
     page,
     pageSize,
     include: [
@@ -20,22 +21,33 @@ export const aliasGetAllData: RequestHandler = (req, res, next) => {
   }
 
   switch (true) {
+    case typeof key === 'string' && key !== '':
+      options.where = {
+        ...options.where,
+        definition: { [Op.like]: `%${key}%` },
+      }
+      break
     case typeof definition === 'string' && definition !== '':
       options.where = {
+        ...options.where,
         definition: { [Op.like]: `%${definition}%` },
       }
       break
   }
 
-  // include: [{model: Tag, as: 'tags'}],
-  //   where: {'tags.id': {in: [1,2,3,4]}},
+  if (typeof meaningId === 'number' && meaningId !== 0) {
+    options.where = {
+      ...options.where,
+      meaningId: { [Op.eq]: meaningId },
+    }
+  }
 
   req.options = options
   next()
 }
 
-export const getAllData = factory.getAll(models.Definition)
-export const createData = factory.createOne(models.Definition)
-export const getData = factory.getOne(models.Definition)
-export const updateData = factory.updateOne(models.Definition)
-export const deleteData = factory.deleteOneAndMany(models.Definition)
+export const getAllData = handlersFactory.getAllData(models.Definition)
+export const createData = handlersFactory.createData(models.Definition)
+export const getData = handlersFactory.getData(models.Definition)
+export const updateData = handlersFactory.updateData(models.Definition)
+export const deleteData = handlersFactory.deleteData(models.Definition)

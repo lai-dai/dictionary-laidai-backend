@@ -15,6 +15,13 @@ export const getAllCommonDataSchema = z.object({
   key: z.string().optional(),
 })
 
+export const commonDataSchema = z.object({
+  id: z.number().optional(),
+  createdById: z.number().optional(),
+})
+
 export const orderSchema = z.enum(['DESC', 'ASC', ''])
 
 export const roleSchema = z.enum(['user', 'admin'])
+
+export const providerSchema = z.enum(['github', 'google', 'credentials'])

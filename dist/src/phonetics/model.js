@@ -16,5 +16,8 @@ const PhoneticsModel = (sequelize) => sequelize.define(models_name_1.MODELS_NAME
     audio: {
         type: sequelize_1.DataTypes.STRING,
     },
+    description: {
+        type: sequelize_1.DataTypes.TEXT('long'),
+    },
 });
 exports.PhoneticsModel = PhoneticsModel;

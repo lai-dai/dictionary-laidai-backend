@@ -13,4 +13,7 @@ export const DefinitionsModel = (sequelize: Sequelize) =>
       type: DataTypes.TEXT('long'),
       allowNull: false,
     },
+    image: {
+      type: DataTypes.STRING,
+    },
   })

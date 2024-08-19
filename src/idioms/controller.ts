@@ -1,13 +1,14 @@
 import { Op } from 'sequelize'
 import { AttrType } from './type'
-import * as factory from '../_middlewares/service-factory'
+import * as handlersFactory from '../_middlewares/handlers-factory'
+import * as servicesFactory from '../_middlewares/services-factory'
 import { RequestHandler } from 'express'
 import { models } from '../_db'
 
 export const aliasGetAllData: RequestHandler = (req, res, next) => {
   const { page, pageSize, idiom } = req.query as any
 
-  const options: factory.GetAllOptionsType<AttrType> = {
+  const options: servicesFactory.GetAllOptionsType<AttrType> = {
     page,
     pageSize,
   }
@@ -24,8 +25,8 @@ export const aliasGetAllData: RequestHandler = (req, res, next) => {
   next()
 }
 
-export const getAllData = factory.getAll(models.Idiom)
-export const createData = factory.createOne(models.Idiom)
-export const getData = factory.getOne(models.Idiom)
-export const updateData = factory.updateOne(models.Idiom)
-export const deleteData = factory.deleteOneAndMany(models.Idiom)
+export const getAllData = handlersFactory.getAllData(models.Idiom)
+export const createData = handlersFactory.createData(models.Idiom)
+export const getData = handlersFactory.getData(models.Idiom)
+export const updateData = handlersFactory.updateData(models.Idiom)
+export const deleteData = handlersFactory.deleteData(models.Idiom)

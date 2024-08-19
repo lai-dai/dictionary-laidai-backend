@@ -17,4 +17,7 @@ export const WordsModel = (sequelize: Sequelize) =>
     description: {
       type: DataTypes.TEXT('long'),
     },
+    totalView: {
+      type: DataTypes.INTEGER,
+    },
   })

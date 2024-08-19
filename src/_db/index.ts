@@ -27,14 +27,7 @@ export const models = {
 }
 
 export function initDB() {
-  sequelize
-    .authenticate()
-    .then(() => {
-      console.log('Connection has been established successfully.')
-    })
-    .catch((error) => {
-      console.error('Unable to connect to the database: ', error)
-    })
+  sequelize.authenticate()
 
   models.PartOfSpeech.belongsTo(models.User, { as: 'createdBy' })
   models.Word.belongsTo(models.User, { as: 'createdBy' })
@@ -75,6 +68,8 @@ export function initDB() {
       // alter: true,
     })
     .then(() => {
+      console.log('Connection has been established successfully.')
+
       models.User.findByPk(1).then((res) => {
         if (!res) {
           models.User.create({

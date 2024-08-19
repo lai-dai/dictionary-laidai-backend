@@ -3,7 +3,8 @@ import { FindAttributeOptions, Op } from 'sequelize'
 import multer from 'multer'
 import sharp from 'sharp'
 
-import * as factory from '../_middlewares/service-factory'
+import * as handlersFactory from '../_middlewares/handlers-factory'
+import * as servicesFactory from '../_middlewares/services-factory'
 import { StatusCodes } from 'http-status-codes'
 import { models } from '../_db'
 import { catchAsync } from '../_lib/utils/catch-async'
@@ -139,7 +140,7 @@ export const aliasGetAllData: RequestHandler = (req, res, next) => {
   const { page, pageSize, name, email, role, active, provider } =
     req.query as any
 
-  const options: factory.GetAllOptionsType<AttrType> = {
+  const options: servicesFactory.GetAllOptionsType<AttrType> = {
     page,
     pageSize,
   }
@@ -184,14 +185,15 @@ export const aliasGetAllData: RequestHandler = (req, res, next) => {
   next()
 }
 
-export const getAllData = factory.getAll(models.User)
+export const getAllData = handlersFactory.getAllData(models.User)
 export const createData: RequestHandler = (req, res) => {
   res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
     status: 'error',
     message: 'This route is not defined! Please use /register instead',
   })
 }
-export const getData = factory.getOne(models.User)
+// export const createData = handlersFactory.createData(models.User)
+export const getData = handlersFactory.getData(models.User)
 // Do NOT update passwords with this!
-export const updateData = factory.updateOne(models.User)
-export const deleteData = factory.deleteOneAndMany(models.User)
+export const updateData = handlersFactory.updateData(models.User)
+export const deleteData = handlersFactory.deleteData(models.User)

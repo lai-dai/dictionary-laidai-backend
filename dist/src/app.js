@@ -31,29 +31,23 @@ const route_11 = require("./phonetics/route");
 exports.app = (0, express_1.default)();
 exports.app.set('trust proxy', 1 /* number of proxies between user and server */);
 // 1) GLOBAL MIDDLEWARES
+const corsOptions = {
+    origin: function (origin, callback) {
+        return callback(null, true);
+    },
+    optionsSuccessStatus: 200,
+    credentials: true,
+    allowedHeaders: 'append,delete,entries,foreach,get,has,keys,set,values,Authorization,Accept,Content-Type,Content-Length,Accept-Encoding',
+    //  [
+    //   'Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token, X-Requested-With',
+    // ],
+    // preflightContinue: true,
+    methods: 'POST, GET, OPTIONS, DELETE, PATCH, PUT',
+};
 // Implement CORS
-// const allowedDomains = [
-//   'http://localhost:3000',
-//   'https://dictionary.laidai.xyz',
-// ]
-// app.use(
-//   cors({
-//     // origin: function (origin, callback) {
-//     //   if (origin && allowedDomains.includes(origin)) {
-//     //     return callback(null, true)
-//     //   }
-//     // },
-//     origin: process.env.BASE_URL,
-//     optionsSuccessStatus: 200,
-//     credentials: true,
-//     allowedHeaders: [
-//       'Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token, X-Requested-With',
-//     ],
-//     preflightContinue: true,
-//     methods: ['POST', 'GET', 'PATCH', 'DELETE', 'OPTIONS'],
-//   })
-// )
-exports.app.use((0, cors_1.default)());
+exports.app.use((0, cors_1.default)(corsOptions));
+// Handle OPTIONS requests
+exports.app.options('*', (0, cors_1.default)()); // Respond to preflight requests
 // Serving static files
 exports.app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
 // Set security HTTP headers

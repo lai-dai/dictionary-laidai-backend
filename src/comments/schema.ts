@@ -1,12 +1,16 @@
 import { z } from 'zod'
-import { getAllCommonDataSchema } from '../_lib/schemas/common'
+import {
+  getAllCommonDataSchema,
+  commonDataSchema,
+} from '../_lib/schemas/common'
 
-export const dataSchema = z.object({
-  id: z.number(),
-  content: z.string(),
-  totalLike: z.number().optional(),
-  commentId: z.number().nullable().optional(),
-})
+export const dataSchema = commonDataSchema.merge(
+  z.object({
+    content: z.string(),
+    totalLike: z.number().optional(),
+    commentId: z.number().optional().nullable(),
+  })
+)
 
 export const getAllDataSchema = getAllCommonDataSchema.merge(
   dataSchema
@@ -16,10 +20,6 @@ export const getAllDataSchema = getAllCommonDataSchema.merge(
     .partial()
 )
 
-export const createDataSchema = dataSchema.omit({ id: true }).merge(
-  z.object({
-    commentId: z.number().optional(),
-  })
-)
+export const createDataSchema = dataSchema.omit({ id: true })
 
 export const updateDataSchema = createDataSchema.partial()

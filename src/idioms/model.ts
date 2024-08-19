@@ -12,7 +12,6 @@ export const IdiomsModel = (sequelize: Sequelize) =>
     idiom: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
     },
     definition: {
       type: DataTypes.STRING,

@@ -1,5 +1,9 @@
 import { z } from 'zod'
-import { getAllCommonDataSchema, roleSchema } from '../_lib/schemas/common'
+import {
+  getAllCommonDataSchema,
+  providerSchema,
+  roleSchema,
+} from '../_lib/schemas/common'
 
 export const dataSchema = z.object({
   id: z.number(),
@@ -12,10 +16,7 @@ export const dataSchema = z.object({
   passwordResetToken: z.string().optional(),
   passwordResetExpires: z.date().or(z.number()).optional(),
   active: z.boolean().default(true).optional(),
-  provider: z
-    .enum(['github', 'google', 'credentials'])
-    .default('credentials')
-    .optional(),
+  provider: providerSchema.default('credentials').optional(),
 })
 
 export const getAllDataSchema = getAllCommonDataSchema.merge(
