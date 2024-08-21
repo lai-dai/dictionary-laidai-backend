@@ -48,9 +48,7 @@ export const aliasIncludeData: RequestHandler = (req, res, next) => {
       model: models.Phonetic,
       as: 'phonetics',
     },
-  ] as
-    | servicesFactory.GetAllOptionsType<AttrType>['include']
-    | servicesFactory.GetOneOptionsType<AttrType>['include']
+  ] as servicesFactory.GetAllOptionsType<AttrType>['include']
 
   req.options = options
   next()

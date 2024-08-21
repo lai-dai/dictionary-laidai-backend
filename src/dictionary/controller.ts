@@ -8,6 +8,8 @@ import { models } from '../_db'
 import { catchAsync } from '../_lib/utils/catch-async'
 import { AppError } from '../_lib/utils/app-error'
 import { StatusCodes } from 'http-status-codes'
+import jwt from 'jsonwebtoken'
+import { delve } from '../_lib/utils/delve'
 
 export const aliasIncludeGetAllData: RequestHandler = (req, res, next) => {
   const options = req.options || {}
@@ -43,7 +45,7 @@ export const aliasIncludeGetData: RequestHandler = (req, res, next) => {
     {
       model: models.Meaning,
       as: 'meanings',
-      attributes: ['id'],
+      attributes: ['id', 'description'],
       include: [
         {
           model: models.PartOfSpeech,
@@ -81,9 +83,7 @@ export const aliasIncludeGetData: RequestHandler = (req, res, next) => {
       as: 'phonetics',
       attributes: ['id', 'audio', 'phonetic', 'description'],
     },
-  ] as
-    | servicesFactory.GetAllOptionsType<AttrType>['include']
-    | servicesFactory.GetOneOptionsType<AttrType>['include']
+  ] as servicesFactory.GetAllOptionsType<AttrType>['include']
 
   req.options = options
   next()
@@ -120,7 +120,7 @@ export const getData = catchAsync(async (req, res, next) => {
   const { where, include = [], attributes, ...opts } = req.options || {}
 
   const doc = await models.Word.findOne({
-    where: { word: req.params.id, ...where },
+    where: { word: { [Op.eq]: req.params.id }, ...where },
     include: servicesFactory.updateInclude(include),
     attributes: servicesFactory.updatedAttributes(attributes),
     ...opts,
@@ -132,7 +132,42 @@ export const getData = catchAsync(async (req, res, next) => {
     )
   }
 
-  req.data = doc
+  let token
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    token = req.headers.authorization.split(' ')[1]
+  } else if (req.cookies?.jwt) {
+    token = req.cookies.jwt
+  }
+
+  let favorite
+  if (token) {
+    // 2) Verification token
+    const decoded = await jwt.verify(token, process.env.JWT_SECRET!)
+
+    // 3) Check if user still exists
+    const currentUser = await models.User.findByPk(
+      delve(decoded as object, 'id')
+    )
+
+    if (currentUser) {
+      const doc2 = await models.Favorite.findOne({
+        where: {
+          wordId: doc.dataValues.id,
+          createdById: currentUser?.dataValues?.id || 0,
+        },
+        attributes: ['id'],
+      })
+
+      if (doc2) {
+        favorite = doc2
+      }
+    }
+  }
+
+  req.data = { ...doc.dataValues, favorite }
   sendsFactory.getSend(req, res, next)
 })
 export const updateData = handlersFactory.updateData(models.Word)

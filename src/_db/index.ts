@@ -38,6 +38,7 @@ export function initDB() {
   models.Definition.belongsTo(models.User, { as: 'createdBy' })
   models.Example.belongsTo(models.User, { as: 'createdBy' })
   models.Comment.belongsTo(models.User, { as: 'createdBy' })
+  models.Favorite.belongsTo(models.User, { as: 'createdBy' })
 
   models.Phonetic.belongsTo(models.Word, { as: 'word' })
   models.Idiom.belongsTo(models.Word, { as: 'word' })
@@ -59,8 +60,7 @@ export function initDB() {
   models.Word.hasMany(models.Meaning, { as: 'meanings' })
   models.Word.hasMany(models.Idiom, { as: 'idioms' })
 
-  models.Favorite.belongsTo(models.User)
-  models.Favorite.belongsTo(models.Word)
+  models.Favorite.belongsTo(models.Word, { as: 'word' })
 
   sequelize
     .sync({

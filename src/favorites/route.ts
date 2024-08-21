@@ -2,12 +2,17 @@ import express from 'express'
 
 import * as controller from './controller'
 import { validatorBody, validatorQuery } from '../_middlewares/validator'
-import { createDataSchema, getAllDataSchema } from './schema'
+import { createDataSchema, getAllDataSchema, toggleDataSchema } from './schema'
 import * as authController from '../auth/controller'
 
 export const router = express.Router()
 
 router.use(authController.protect)
+
+router
+  .route('/toggle')
+  .post(validatorBody(toggleDataSchema), controller.toggleData)
+
 router.use(authController.restrictTo('admin'))
 
 router

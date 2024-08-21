@@ -7,7 +7,6 @@ import {
 export const dataSchema = commonDataSchema.merge(
   z.object({
     id: z.number(),
-    userId: z.number().optional(),
     wordId: z.number().optional(),
   })
 )
@@ -15,5 +14,11 @@ export const dataSchema = commonDataSchema.merge(
 export const getAllDataSchema = getAllCommonDataSchema
 
 export const createDataSchema = dataSchema.omit({ id: true })
+
+export const toggleDataSchema = dataSchema.merge(
+  z.object({
+    currentFavorite: z.boolean().optional(),
+  })
+)
 
 export const updateDataSchema = createDataSchema.partial()
