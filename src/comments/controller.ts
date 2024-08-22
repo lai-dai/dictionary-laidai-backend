@@ -74,19 +74,13 @@ export const updateData = handlersFactory.updateData(models.Comment)
 export const deleteData = catchAsync(async (req, res, next) => {
   const { id } = req.params
 
-  const comments = await models.Comment.findAll({
+  await models.Comment.destroy({
     where: {
       commentId: { [Op.eq]: Number(id) },
     },
   })
 
   const doc = await servicesFactory.deleteOne(models.Comment)(id)
-
-  if (comments.length) {
-    const ids = comments.map((e) => e.dataValues.id)
-
-    await models.Comment.destroy({ where: { id: ids as any } })
-  }
 
   req.data = doc
   sendsFactory.deleteSend(req, res, next)
