@@ -10,10 +10,19 @@ export const DefinitionsModel = (sequelize: Sequelize) =>
       primaryKey: true,
     },
     definition: {
-      type: DataTypes.TEXT('long'),
+      type: DataTypes.STRING,
       allowNull: false,
+    },
+    translate: {
+      type: DataTypes.STRING,
+      defaultValue: '',
+    },
+    description: {
+      type: DataTypes.TEXT('long'),
+      defaultValue: '',
     },
     image: {
       type: DataTypes.STRING,
+      defaultValue: '',
     },
   })

@@ -25,11 +25,11 @@ const createSendToken = (
 ) => {
   const token = signToken(user.id as number)
 
+  const tokenExpires = new Date(
+    Date.now() + Number(process.env.JWT_COOKIE_EXPIRES_IN) * 24 * 60 * 60 * 1000
+  )
   res.cookie('jwt', token, {
-    expires: new Date(
-      Date.now() +
-        Number(process.env.JWT_COOKIE_EXPIRES_IN) * 24 * 60 * 60 * 1000
-    ),
+    expires: tokenExpires,
     httpOnly: true,
     secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
   })
@@ -42,7 +42,7 @@ const createSendToken = (
     message,
     data: {
       token,
-      user,
+      user: { ...user, tokenExpires },
     },
   })
 }
@@ -113,6 +113,15 @@ export const login = catchAsync(async (req, res, next) => {
     )
   }
 
+  if (!user.dataValues.active) {
+    return next(
+      new AppError(
+        'Your account has been locked, please contact us to reactivate your account.',
+        StatusCodes.UNAUTHORIZED
+      )
+    )
+  }
+
   // // 3) If everything ok, send token to client
   createSendToken(
     user.dataValues,
@@ -132,6 +141,36 @@ export const logout: RequestHandler = (req, res) => {
     .status(StatusCodes.OK)
     .json({ status: STATUS_NAME.SUCCESS, message: 'Logout is successfully' })
 }
+
+export const userAble = catchAsync(async (req, res, next) => {
+  // 1) Getting token and check of it's there
+  let token
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    token = req.headers.authorization.split(' ')[1]
+  } else if (req.cookies?.jwt) {
+    token = req.cookies.jwt
+  }
+
+  if (token) {
+    // 2) Verification token
+    const decoded = await jwt.verify(token, process.env.JWT_SECRET!)
+    // 3) Check if user still exists
+    const currentUser = await models.User.findByPk(
+      delve(decoded as object, 'id')
+    )
+
+    if (currentUser) {
+      // GRANT ACCESS TO PROTECTED ROUTE
+      req.user = currentUser.dataValues
+      res.locals.user = currentUser.dataValues
+    }
+  }
+
+  next()
+})
 
 export const protect = catchAsync(async (req, res, next) => {
   // 1) Getting token and check of it's there

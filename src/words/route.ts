@@ -7,6 +7,19 @@ import * as authController from '../auth/controller'
 
 export const router = express.Router()
 
+router
+  .route('/search')
+  .get(
+    validatorQuery(getAllAttrSchema),
+    controller.aliasGetAllData,
+    controller.aliasIncludeGetAllData,
+    controller.getAllData
+  )
+
+router
+  .route('/search/:id')
+  .get(controller.aliasIncludeGetData, controller.getData)
+
 router.use(authController.protect)
 router.use(authController.restrictTo('admin'))
 

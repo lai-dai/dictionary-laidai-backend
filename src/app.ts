@@ -25,7 +25,6 @@ import { router as favoritesRouter } from './favorites/route'
 import { router as idiomsRouter } from './idioms/route'
 import { router as commentsRouter } from './comments/route'
 import { router as phoneticsRouter } from './phonetics/route'
-import { router as dictionaryRouter } from './dictionary/route'
 
 declare global {
   namespace Express {
@@ -110,7 +109,6 @@ app.use('/api/v1/favorites', favoritesRouter)
 app.use('/api/v1/idioms', idiomsRouter)
 app.use('/api/v1/comments', commentsRouter)
 app.use('/api/v1/phonetics', phoneticsRouter)
-app.use('/api/v1/dictionary', dictionaryRouter)
 
 app.all('*', (req, res, next) => {
   next(

@@ -31,7 +31,12 @@ export const getAllDataSchema = getAllCommonDataSchema.merge(
     .partial()
 )
 
-export const createDataSchema = dataSchema.omit({ id: true })
+export const createDataSchema = dataSchema.pick({
+  name: true,
+  email: true,
+  role: true,
+  active: true,
+})
 
 export const updateDataSchema = createDataSchema.partial()
 

@@ -12,6 +12,13 @@ router.use(authController.protect)
 router
   .route('/toggle')
   .post(validatorBody(toggleDataSchema), controller.toggleData)
+router
+  .route('/me')
+  .get(
+    validatorQuery(getAllDataSchema),
+    controller.aliasGetAllMe,
+    controller.getAllMe
+  )
 
 router.use(authController.restrictTo('admin'))
 

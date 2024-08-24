@@ -75,6 +75,7 @@ export const updateMe = catchAsync(async (req, res, next) => {
 
   let image
   if (req.file) image = req.file.filename
+  if (req.body.image) image = req.body.image
 
   // 3) Update user document
   await models.User.update(
@@ -137,7 +138,7 @@ export const deleteMe = catchAsync(async (req, res, next) => {
 })
 
 export const aliasGetAllData: RequestHandler = (req, res, next) => {
-  const { page, pageSize, name, email, role, active, provider } =
+  const { page, pageSize, key, name, email, role, active, provider } =
     req.query as any
 
   const options: servicesFactory.GetAllOptionsType<AttrType> = {
@@ -145,40 +146,45 @@ export const aliasGetAllData: RequestHandler = (req, res, next) => {
     pageSize,
   }
 
-  switch (true) {
-    case typeof name === 'string' && name !== '':
-      options.where = {
-        name: { [Op.like]: `%${name}%` },
-      }
-      break
+  if (typeof key === 'string' && key !== '') {
+    options.where = {
+      ...options.where,
+      [Op.or]: [
+        { name: { [Op.like]: `%${key}%` } },
+        { email: { [Op.like]: `%${key}%` } },
+      ],
+    }
+  }
 
-    case typeof email === 'string' && email !== '':
-      options.where = {
-        email: { [Op.like]: `%${email}%` },
-        ...options.where,
-      }
-      break
-
-    case typeof role === 'string' && role !== '':
-      options.where = {
-        role: { [Op.eq]: role },
-        ...options.where,
-      }
-      break
-
-    case typeof active === 'boolean':
-      options.where = {
-        active: { [Op.eq]: active },
-        ...options.where,
-      }
-      break
-
-    case typeof provider === 'string' && provider !== '':
-      options.where = {
-        provider: { [Op.eq]: provider },
-        ...options.where,
-      }
-      break
+  if (typeof name === 'string' && name !== '') {
+    options.where = {
+      ...options.where,
+      name: { [Op.like]: `%${name}%` },
+    }
+  }
+  if (typeof email === 'string' && email !== '') {
+    options.where = {
+      ...options.where,
+      email: { [Op.like]: `%${email}%` },
+    }
+  }
+  if (typeof active === 'boolean') {
+    options.where = {
+      ...options.where,
+      active: { [Op.eq]: active },
+    }
+  }
+  if (typeof provider === 'string' && provider !== '') {
+    options.where = {
+      ...options.where,
+      provider: { [Op.eq]: provider },
+    }
+  }
+  if (typeof role === 'string' && role !== '') {
+    options.where = {
+      ...options.where,
+      role: { [Op.eq]: role },
+    }
   }
 
   req.options = options

@@ -11,7 +11,11 @@ export const dataSchema = commonDataSchema.merge(
   })
 )
 
-export const getAllDataSchema = getAllCommonDataSchema
+export const getAllDataSchema = getAllCommonDataSchema.merge(
+  dataSchema.pick({
+    wordId: true,
+  })
+)
 
 export const createDataSchema = dataSchema.omit({ id: true })
 
