@@ -11,6 +11,39 @@ import { StatusCodes } from 'http-status-codes'
 import { delve } from '../_lib/utils/delve'
 import jwt from 'jsonwebtoken'
 
+export const aliasIncludeAdminOnlyWordData: RequestHandler = (
+  req,
+  res,
+  next
+) => {
+  const options = req.options || {}
+
+  options.attributes = {
+    include: ['id', 'word'],
+  } as servicesFactory.GetAllOptionsType<AttrType>['attributes']
+
+  req.options = options
+  next()
+}
+
+export const aliasIncludeAdminGetData: RequestHandler = (req, res, next) => {
+  const options = req.options || {}
+
+  options.include = [
+    {
+      model: models.Word,
+      as: 'relationship',
+      attributes: ['id', 'word'],
+      through: {
+        attributes: ['id'],
+      },
+    },
+  ] as servicesFactory.GetAllOptionsType<AttrType>['include']
+
+  req.options = options
+  next()
+}
+
 export const aliasIncludeGetAllData: RequestHandler = (req, res, next) => {
   const options = req.options || {}
 
@@ -28,7 +61,7 @@ export const aliasIncludeGetAllData: RequestHandler = (req, res, next) => {
         {
           model: models.Definition,
           as: 'definitions',
-          attributes: ['id', 'definition'],
+          attributes: ['id', 'definition', 'translate'],
         },
       ],
     },
@@ -42,6 +75,14 @@ export const aliasIncludeGetData: RequestHandler = (req, res, next) => {
   const options = req.options || {}
 
   options.include = [
+    {
+      model: models.Word,
+      as: 'relationship',
+      attributes: ['id', 'word'],
+      through: {
+        attributes: [],
+      },
+    },
     {
       model: models.Meaning,
       as: 'meanings',
@@ -169,6 +210,35 @@ export const getCData = catchAsync(async (req, res, next) => {
   sendsFactory.getSend(req, res, next)
 })
 
+export const getAllOnlyWordData = catchAsync(async (req, res, next) => {
+  const {
+    pageSize,
+    page,
+    include = [],
+    attributes,
+    ...opts
+  } = req.options || {}
+
+  const { count, rows } = await models.Word.findAndCountAll({
+    limit: pageSize,
+    offset: (page - 1) * pageSize,
+    include,
+    attributes,
+    ...opts,
+  })
+
+  req.data = {
+    list: rows,
+    pagination: {
+      page,
+      pageSize,
+      pageCount: count > pageSize ? Math.floor(count / pageSize) : 1,
+      total: count,
+    },
+  }
+
+  sendsFactory.getAllSend(req, res, next)
+})
 export const getAllData = handlersFactory.getAllData(models.Word)
 export const createData = handlersFactory.createData(models.Word)
 export const getData = handlersFactory.getData(models.Word)

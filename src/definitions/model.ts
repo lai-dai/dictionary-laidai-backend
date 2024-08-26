@@ -19,7 +19,6 @@ export const DefinitionsModel = (sequelize: Sequelize) =>
     },
     description: {
       type: DataTypes.TEXT('long'),
-      defaultValue: '',
     },
     image: {
       type: DataTypes.STRING,

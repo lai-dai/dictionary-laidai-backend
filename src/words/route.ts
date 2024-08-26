@@ -18,10 +18,20 @@ router
 
 router
   .route('/search/:id')
-  .get(controller.aliasIncludeGetData, controller.getData)
+  .get(controller.aliasIncludeGetData, controller.getCData)
 
 router.use(authController.protect)
 router.use(authController.restrictTo('admin'))
+
+router
+  .route('/onlyWord')
+  .get(
+    validatorQuery(getAllAttrSchema),
+    controller.aliasGetAllData,
+    controller.aliasIncludeAdminOnlyWordData,
+    controller.getAllOnlyWordData
+  )
+router.route('/onlyWord/:id').get(controller.getData)
 
 router
   .route('/')
@@ -34,6 +44,6 @@ router
 
 router
   .route('/:id')
-  .get(controller.getData)
+  .get(controller.aliasIncludeAdminGetData, controller.getData)
   .patch(validatorBody(updateAttrSchema), controller.updateData)
   .delete(controller.deleteData)

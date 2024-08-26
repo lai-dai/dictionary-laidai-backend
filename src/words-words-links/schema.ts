@@ -6,17 +6,12 @@ import {
 
 export const dataSchema = commonDataSchema.merge(
   z.object({
-    id: z.number(),
-    translate: z.string(),
-    definition: z.string().optional(),
-    description: z.string().optional(),
-    image: z.string().optional(),
     wordId: z
       .string()
       .or(z.number().min(1, 'greater than 0'))
       .transform(Number)
       .optional(),
-    meaningId: z
+    relationshipId: z
       .string()
       .or(z.number().min(1, 'greater than 0'))
       .transform(Number)
@@ -27,10 +22,8 @@ export const dataSchema = commonDataSchema.merge(
 export const getAllDataSchema = getAllCommonDataSchema.merge(
   dataSchema
     .pick({
-      definition: true,
-      translate: true,
+      relationshipId: true,
       wordId: true,
-      meaningId: true,
     })
     .partial()
 )

@@ -10,4 +10,5 @@ export const MODELS_NAME = {
   IDIOMS: 'idioms',
   COMMENTS: 'comments',
   PHONETICS: 'phonetics',
+  WORDS_WORDS_LINKS: 'words_words_links',
 } as const

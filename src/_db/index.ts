@@ -11,6 +11,7 @@ import { IdiomsModel } from '../idioms/model'
 import { CommentsModel } from '../comments/model'
 import { PhoneticsModel } from '../phonetics/model'
 import { PART_OF_SPEECHES } from '../_lib/data/init-data'
+import { WordsWordsLinksModel } from '../words-words-links/model'
 
 export const sequelize = new Sequelize(options)
 
@@ -25,6 +26,7 @@ export const models = {
   Idiom: IdiomsModel(sequelize),
   Comment: CommentsModel(sequelize),
   Phonetic: PhoneticsModel(sequelize),
+  WordsWordsLinks: WordsWordsLinksModel(sequelize),
 }
 
 export function initDB() {
@@ -39,6 +41,7 @@ export function initDB() {
   models.Example.belongsTo(models.User, { as: 'createdBy' })
   models.Comment.belongsTo(models.User, { as: 'createdBy' })
   models.Favorite.belongsTo(models.User, { as: 'createdBy' })
+  models.WordsWordsLinks.belongsTo(models.User, { as: 'createdBy' })
 
   models.Phonetic.belongsTo(models.Word, { as: 'word' })
   models.Idiom.belongsTo(models.Word, { as: 'word' })
@@ -59,6 +62,11 @@ export function initDB() {
   models.Word.hasMany(models.Phonetic, { as: 'phonetics' })
   models.Word.hasMany(models.Meaning, { as: 'meanings' })
   models.Word.hasMany(models.Idiom, { as: 'idioms' })
+
+  models.Word.belongsToMany(models.Word, {
+    through: models.WordsWordsLinks,
+    as: 'relationship',
+  })
 
   models.Favorite.belongsTo(models.Word, { as: 'word' })
 

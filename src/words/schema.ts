@@ -3,7 +3,6 @@ import {
   getAllCommonDataSchema,
   commonDataSchema,
 } from '../_lib/schemas/common'
-import { FavoritesModel } from '../favorites/model'
 
 export const attrSchema = commonDataSchema.merge(
   z.object({

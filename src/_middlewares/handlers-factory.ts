@@ -26,7 +26,10 @@ export const createData = <DataAttr extends Record<string, any>>(
           return record
         })
 
-        const docs = await servicesFactory.createMany(Model)(records)
+        const docs = await servicesFactory.createMany(Model)(
+          records,
+          req.options
+        )
 
         req.data = docs
         sendsFactory.createSend(req, res, next)
@@ -35,7 +38,10 @@ export const createData = <DataAttr extends Record<string, any>>(
       case req.body instanceof Object:
         req.body.createdById = req.user?.id
 
-        const doc = await servicesFactory.createOne(Model)(req.body)
+        const doc = await servicesFactory.createOne(Model)(
+          req.body,
+          req.options
+        )
 
         req.data = doc
         sendsFactory.createSend(req, res, next)
@@ -69,7 +75,11 @@ export const updateData = <DataAttr extends Record<string, any>>(
   catchAsync(async (req, res, next) => {
     req.body.createdById = req.user?.id
 
-    const doc = await servicesFactory.updateOne(Model)(req.params.id, req.body)
+    const doc = await servicesFactory.updateOne(Model)(
+      req.params.id,
+      req.body,
+      req.options as any
+    )
 
     if (!doc) {
       return next(

@@ -5,6 +5,9 @@ import {
   Attributes,
   FindOptions,
   Includeable,
+  CreateOptions,
+  BulkCreateOptions,
+  UpdateOptions,
 } from 'sequelize'
 
 import { StatusCodes } from 'http-status-codes'
@@ -52,16 +55,22 @@ export const createOne =
   <DataAttr extends Record<string, any>>(
     Model: ModelStatic<ModelType<DataAttr, DataAttr>>
   ) =>
-  async (record: MakeNullishOptional<DataAttr>) => {
-    return await Model.create(record)
+  async (
+    record: MakeNullishOptional<DataAttr>,
+    options?: CreateOptions<Attributes<ModelType>>
+  ) => {
+    return await Model.create(record, options)
   }
 
 export const createMany =
   <DataAttr extends Record<string, any>>(
     Model: ModelStatic<ModelType<DataAttr, DataAttr>>
   ) =>
-  async (records: MakeNullishOptional<DataAttr>[]) => {
-    return await Model.bulkCreate(records)
+  async (
+    records: MakeNullishOptional<DataAttr>[],
+    options?: BulkCreateOptions<Attributes<ModelType>>
+  ) => {
+    return await Model.bulkCreate(records, options)
   }
 
 export type GetOneOptionsType<TAttr extends Record<string, any>> = Omit<
@@ -107,8 +116,14 @@ export const updateOne =
   <DataAttr extends Record<string, any>>(
     Model: ModelStatic<ModelType<DataAttr, DataAttr>>
   ) =>
-  async (id: any, update: any) => {
-    await Model.update(update, { where: { id: id as any } })
+  async (
+    id: any,
+    update: any,
+    options?: UpdateOptions<Attributes<ModelType>>
+  ) => {
+    if (options) options.where = { ...options.where, id } as any
+
+    await Model.update(update, options || { where: { id: id as any } })
 
     return await Model.findByPk(id)
   }

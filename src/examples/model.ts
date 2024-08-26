@@ -19,6 +19,5 @@ export const ExamplesModel = (sequelize: Sequelize) =>
     },
     description: {
       type: DataTypes.TEXT('long'),
-      defaultValue: ''
     },
   })
