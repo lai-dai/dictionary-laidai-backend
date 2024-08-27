@@ -29,7 +29,14 @@ export const getAll =
     Model: ModelStatic<ModelType<DataAttr, DataAttr>>
   ) =>
   async (options?: Record<string, any>) => {
-    const { pageSize, page, include = [], attributes, ...opts } = options || {}
+    const {
+      pageSize,
+      page,
+      include = [],
+      attributes,
+      order,
+      ...opts
+    } = options || {}
 
     const { count, rows } = await Model.findAndCountAll({
       limit: pageSize,
@@ -37,6 +44,7 @@ export const getAll =
       include: Model.name === 'users' ? include : updateInclude(include),
       attributes:
         Model.name === 'users' ? attributes : updatedAttributes(attributes),
+      order: order || [['createdAt', 'DESC']],
       ...opts,
     })
 
