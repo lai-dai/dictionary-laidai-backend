@@ -49,6 +49,14 @@ export const aliasIncludeGetAllData: RequestHandler = (req, res, next) => {
 
   options.include = [
     {
+      model: models.Word,
+      as: 'relationship',
+      attributes: ['id', 'word'],
+      through: {
+        attributes: [],
+      },
+    },
+    {
       model: models.Meaning,
       as: 'meanings',
       attributes: ['id'],
@@ -62,6 +70,7 @@ export const aliasIncludeGetAllData: RequestHandler = (req, res, next) => {
           model: models.Definition,
           as: 'definitions',
           attributes: ['id', 'definition', 'translate'],
+          limit: 1,
         },
       ],
     },
