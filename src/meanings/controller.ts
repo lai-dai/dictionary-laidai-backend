@@ -42,6 +42,26 @@ export const aliasGetAllData: RequestHandler = (req, res, next) => {
   next()
 }
 
+export const aliasIncludesData: RequestHandler = (req, res, next) => {
+  const options = req.options || {}
+
+  options.include = [
+    {
+      model: models.Word,
+      as: 'word',
+      attributes: ['id', 'word'],
+    },
+    {
+      model: models.PartOfSpeech,
+      as: 'partOfSpeech',
+      attributes: ['id', 'name'],
+    },
+  ] as servicesFactory.GetAllOptionsType<AttrType>['include']
+
+  req.options = options
+  next()
+}
+
 export const getAllData = handlersFactory.getAllData(models.Meaning)
 export const createData = handlersFactory.createData(models.Meaning)
 export const getData = handlersFactory.getData(models.Meaning)

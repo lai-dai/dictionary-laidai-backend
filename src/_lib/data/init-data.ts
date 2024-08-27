@@ -6,8 +6,6 @@ export const PART_OF_SPEECHES = [
     abbreviation: 'n',
     translate: 'Danh từ',
     description: '',
-    createdAt: '2024-08-19T08:56:04.000Z',
-    updatedAt: '2024-08-19T08:56:04.000Z',
     createdById: 1,
   },
   {
@@ -17,8 +15,6 @@ export const PART_OF_SPEECHES = [
     abbreviation: 'v',
     translate: 'Động từ',
     description: '',
-    createdAt: '2024-08-19T08:56:21.000Z',
-    updatedAt: '2024-08-19T08:56:21.000Z',
     createdById: 1,
   },
   {
@@ -28,8 +24,6 @@ export const PART_OF_SPEECHES = [
     abbreviation: 'adj',
     translate: 'Tính từ',
     description: '',
-    createdAt: '2024-08-19T08:56:46.000Z',
-    updatedAt: '2024-08-19T08:56:46.000Z',
     createdById: 1,
   },
   {
@@ -39,8 +33,6 @@ export const PART_OF_SPEECHES = [
     abbreviation: 'adv',
     translate: 'Trạng từ',
     description: '',
-    createdAt: '2024-08-19T08:57:02.000Z',
-    updatedAt: '2024-08-19T08:57:02.000Z',
     createdById: 1,
   },
   {
@@ -50,8 +42,6 @@ export const PART_OF_SPEECHES = [
     abbreviation: 'prep',
     translate: 'Giới từ',
     description: '',
-    createdAt: '2024-08-19T08:57:21.000Z',
-    updatedAt: '2024-08-19T08:57:21.000Z',
     createdById: 1,
   },
   {
@@ -61,8 +51,6 @@ export const PART_OF_SPEECHES = [
     abbreviation: 'pronoun',
     translate: 'Đại từ',
     description: '',
-    createdAt: '2024-08-19T08:57:38.000Z',
-    updatedAt: '2024-08-19T08:57:38.000Z',
     createdById: 1,
   },
   {
@@ -72,8 +60,6 @@ export const PART_OF_SPEECHES = [
     abbreviation: 'article',
     translate: 'Mạo từ',
     description: '',
-    createdAt: '2024-08-19T08:57:57.000Z',
-    updatedAt: '2024-08-19T08:57:57.000Z',
     createdById: 1,
   },
   {
@@ -83,8 +69,6 @@ export const PART_OF_SPEECHES = [
     abbreviation: 'interjection',
     translate: 'Thán từ',
     description: '',
-    createdAt: '2024-08-19T08:58:13.000Z',
-    updatedAt: '2024-08-19T08:58:13.000Z',
     createdById: 1,
   },
   {
@@ -94,8 +78,24 @@ export const PART_OF_SPEECHES = [
     abbreviation: 'conjunction',
     translate: 'Liên từ',
     description: '',
-    createdAt: '2024-08-19T08:58:25.000Z',
-    updatedAt: '2024-08-19T08:58:25.000Z',
+    createdById: 1,
+  },
+  {
+    id: 10,
+    name: 'transitive verb',
+    order: 10,
+    abbreviation: 'transitive verb',
+    translate: 'Ngoại động từ',
+    description: '',
+    createdById: 1,
+  },
+  {
+    id: 11,
+    name: 'intransitive verb',
+    order: 11,
+    abbreviation: 'intransitive verb',
+    translate: 'Nội động từ',
+    description: '',
     createdById: 1,
   },
 ]

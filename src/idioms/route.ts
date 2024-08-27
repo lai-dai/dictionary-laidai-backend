@@ -15,6 +15,7 @@ router
   .get(
     validatorQuery(getAllDataSchema),
     controller.aliasGetAllData,
+    controller.aliasIncludesData,
     controller.getAllData
   )
   .post(validatorBody(createDataSchema), controller.createData)
