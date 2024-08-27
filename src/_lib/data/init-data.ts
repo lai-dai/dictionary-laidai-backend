@@ -47,7 +47,7 @@ export const PART_OF_SPEECHES = [
     id: 5,
     name: 'preposition',
     order: 5,
-    abbreviation: 'preposition',
+    abbreviation: 'prep',
     translate: 'Giới từ',
     description: '',
     createdAt: '2024-08-19T08:57:21.000Z',

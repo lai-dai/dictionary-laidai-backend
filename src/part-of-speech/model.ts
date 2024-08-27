@@ -20,9 +20,11 @@ export const PartOfSpeechesModel = (sequelize: Sequelize) =>
     },
     abbreviation: {
       type: DataTypes.STRING,
+      defaultValue: '',
     },
     translate: {
       type: DataTypes.STRING,
+      defaultValue: '',
     },
     description: {
       type: DataTypes.TEXT('long'),

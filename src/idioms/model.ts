@@ -15,6 +15,11 @@ export const IdiomsModel = (sequelize: Sequelize) =>
     },
     definition: {
       type: DataTypes.STRING,
+      defaultValue: '',
+    },
+    translate: {
+      type: DataTypes.STRING,
+      defaultValue: '',
     },
     description: {
       type: DataTypes.TEXT('long'),

@@ -8,6 +8,7 @@ export const dataSchema = commonDataSchema.merge(
   z.object({
     idiom: z.string().transform((e) => e?.toLowerCase()),
     definition: z.string().optional(),
+    translate: z.string().optional(),
     description: z.string().optional(),
     wordId: z
       .string()
