@@ -94,7 +94,7 @@ export const getAllMe = catchAsync(async (req, res, next) => {
     pagination: {
       page,
       pageSize,
-      pageCount: count > pageSize ? Math.floor(count / pageSize) : 1,
+      pageCount: count > pageSize ? Math.ceil(count / pageSize) : 1,
       total: count,
     },
   }
