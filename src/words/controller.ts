@@ -1,4 +1,4 @@
-import { Op } from 'sequelize'
+import { Op, Order } from 'sequelize'
 import { AttrType } from './type'
 import * as handlersFactory from '../_middlewares/handlers-factory'
 import * as servicesFactory from '../_middlewares/services-factory'
@@ -21,6 +21,8 @@ export const aliasIncludeAdminOnlyWordData: RequestHandler = (
   options.attributes = {
     include: ['id', 'word'],
   } as servicesFactory.GetAllOptionsType<AttrType>['attributes']
+
+  options.order = [['word', 'ASC']] as Order
 
   req.options = options
   next()
