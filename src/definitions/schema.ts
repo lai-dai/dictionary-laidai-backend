@@ -9,7 +9,7 @@ export const dataSchema = commonDataSchema.merge(
     id: z.number(),
     translate: z.string(),
     definition: z.string().optional(),
-    description: z.string().optional(),
+    description: z.string().nullable().optional(),
     image: z.string().optional(),
     wordId: z
       .string()

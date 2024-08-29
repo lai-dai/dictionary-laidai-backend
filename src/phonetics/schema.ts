@@ -8,7 +8,7 @@ export const dataSchema = commonDataSchema.merge(
   z.object({
     phonetic: z.string().transform((e) => e?.toLowerCase()),
     audio: z.string().optional(),
-    description: z.string().optional(),
+    description: z.string().nullable().optional(),
     wordId: z
       .string()
       .or(z.number().min(1, 'greater than 0'))

@@ -7,8 +7,8 @@ import {
 export const attrSchema = commonDataSchema.merge(
   z.object({
     word: z.string().transform((e) => e?.toLowerCase()),
-    description: z.string().optional(),
-    totalView: z.number().optional(),
+    description: z.string().nullable().optional(),
+    totalView: z.number().default(0).optional(),
   })
 )
 
